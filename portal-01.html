@@ -364,21 +364,27 @@
   const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`;
 
   // ── DRIVE URL CONVERTER ──
-  // Converts a Google Drive share link into a direct embed/src URL
+  // Extracts the file ID from any Google Drive share link format
+  function driveFileId(url) {
+    if (!url) return null;
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    return match ? match[1] : null;
+  }
+
+  // Images: use Drive thumbnail API — works cross-origin, no CORS issues
+  // sz=s1200 requests a large version (up to 1200px on longest side)
   function driveEmbed(url) {
     if (!url) return '';
-    // already a direct link
-    if (url.includes('uc?') || url.includes('export=')) return url;
-    // extract file ID from share link formats
-    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    const id = driveFileId(url);
+    if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=s1200`;
     return url;
   }
 
+  // Audio: use the open resource URL format which streams without redirect loops
   function driveAudio(url) {
     if (!url) return '';
-    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return `https://drive.google.com/uc?export=download&id=${match[1]}`;
+    const id = driveFileId(url);
+    if (id) return `https://drive.google.com/uc?export=open&id=${id}`;
     return url;
   }
 
