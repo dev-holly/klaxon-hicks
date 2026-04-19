@@ -328,7 +328,7 @@
     const card = document.createElement(status === 'open' ? 'a' : 'div');
     card.className = `portal-card ${status}`;
     if (status === 'open' && portal.portal_id) {
-      card.href = `portal-${portal.portal_id}.html`;
+      card.href = `${portal.portal_id}.html`;
     }
 
     let statusLabel = '';
