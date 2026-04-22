@@ -5,248 +5,197 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KLAXON HICKS — SIGNAL NOISE</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Special+Elite&family=Oswald:wght@200;400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=Courier+Prime:wght@400;700&display=swap');
 
   :root {
-    --black:  #0a0804;
-    --paper:  #d4c9a8;
-    --rust:   #b84a1e;
-    --acid:   #c8e600;
-    --ash:    #5a5248;
-    --static: #1a1714;
+    --white:    #f4f1ea;
+    --concrete: #e6e2d8;
+    --ink:      #141210;
+    --mid:      #7a756e;
+    --burn:     #c23308;
+    --card-bg:  #f9f7f2;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
 
   body {
-    background-color: var(--black);
-    color: var(--paper);
-    font-family: 'Special Elite', cursive;
+    background-color: var(--white);
+    color: var(--ink);
+    font-family: 'Barlow Condensed', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
-    cursor: crosshair;
   }
 
-  /* grain */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 999; opacity: 0.4;
-  }
-
-  /* scanlines */
-  body::after {
-    content: '';
-    position: fixed; inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
-    pointer-events: none; z-index: 998;
-  }
-
-  /* ── HEADER ── */
   header {
     padding: 3rem 2rem 1.5rem;
-    border-bottom: 1px solid var(--ash);
-    position: relative; overflow: hidden;
-  }
-  .header-noise {
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(-45deg, transparent, transparent 8px, rgba(184,74,30,0.04) 8px, rgba(184,74,30,0.04) 9px);
+    border-bottom: 1px solid var(--ink);
   }
   .band-name {
-    font-family: 'VT323', monospace;
-    font-size: clamp(3.5rem, 12vw, 9rem);
-    line-height: 0.85;
-    color: var(--paper);
-    text-shadow: 3px 3px 0 var(--rust), -1px -1px 0 var(--ash), 6px 6px 20px rgba(184,74,30,0.3);
-    letter-spacing: -2px;
-    position: relative; z-index: 1;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 14vw, 9rem);
+    line-height: 0.85; color: var(--ink); letter-spacing: 0.02em;
   }
-  .band-name span { color: var(--rust); }
-  .band-name:hover { animation: glitch 0.3s ease-in-out; }
-
-  @keyframes glitch {
-    0%   { text-shadow: 3px 3px 0 var(--rust), -1px -1px 0 var(--ash); }
-    20%  { text-shadow: -3px 3px 0 var(--acid), 3px -1px 0 var(--rust); transform: skewX(-2deg); }
-    40%  { text-shadow: 3px -3px 0 var(--rust), -3px 3px 0 var(--acid); transform: skewX(2deg); }
-    60%  { text-shadow: 3px 3px 0 var(--rust); transform: translateX(2px); }
-    100% { text-shadow: 3px 3px 0 var(--rust), -1px -1px 0 var(--ash); transform: none; }
-  }
-
+  .band-name span { color: var(--burn); }
   .series-title {
-    font-family: 'Oswald', sans-serif; font-weight: 200;
-    font-size: clamp(0.7rem, 2vw, 1rem);
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 300;
+    font-size: clamp(0.65rem, 1.8vw, 0.85rem);
     letter-spacing: 0.5em; text-transform: uppercase;
-    color: var(--ash); margin-top: 0.75rem; position: relative; z-index: 1;
+    color: var(--mid); margin-top: 0.75rem;
   }
-  .series-title em { color: var(--acid); font-style: normal; }
-
+  .series-title em { color: var(--burn); font-style: normal; }
   .header-meta {
-    font-family: 'VT323', monospace; font-size: 0.9rem;
-    color: var(--ash); margin-top: 1.5rem; position: relative; z-index: 1;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.78rem; color: var(--mid); margin-top: 1.25rem;
   }
-
   .blink { animation: blink 1.1s step-end infinite; }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* ── MAIN ── */
-  main { padding: 3rem 2rem; max-width: 960px; margin: 0 auto; }
+  main { padding: 0 2rem 4rem; max-width: 960px; margin: 0 auto; }
 
-  /* ── STATUS BAR ── */
   .status-bar {
-    display: flex; gap: 2rem; padding: 0.75rem 0;
-    border-top: 1px solid var(--ash); border-bottom: 1px solid var(--ash);
-    margin-bottom: 3rem; font-family: 'VT323', monospace;
-    font-size: 1rem; flex-wrap: wrap;
+    display: flex; gap: 2rem;
+    border-bottom: 1px solid rgba(20,18,16,0.15);
+    margin-bottom: 2.5rem; margin-left: -2rem; margin-right: -2rem;
+    font-family: 'Courier Prime', monospace; font-size: 0.72rem;
+    flex-wrap: wrap; background: var(--concrete);
+    padding: 0.5rem 2rem;
   }
-  .status-item { display: flex; align-items: center; gap: 0.5rem; color: var(--ash); text-transform: uppercase; letter-spacing: 0.1em; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .dot-open  { background: var(--acid); box-shadow: 0 0 6px var(--acid); animation: pulse 2s ease-in-out infinite; }
-  .dot-soon  { background: var(--rust); }
-  .dot-closed { background: var(--ash); }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .status-item { display: flex; align-items: center; gap: 0.4rem; color: var(--mid); text-transform: uppercase; letter-spacing: 0.08em; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot-open   { background: var(--burn); }
+  .dot-soon   { border: 1.5px solid var(--mid); }
+  .dot-closed { background: var(--concrete); border: 1.5px solid var(--mid); }
 
-  /* ── SECTION LABEL ── */
   .section-label {
-    font-family: 'Oswald', sans-serif; font-weight: 700;
-    font-size: 0.65rem; letter-spacing: 0.4em; text-transform: uppercase;
-    color: var(--rust); margin-bottom: 1.25rem;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 0.6rem; letter-spacing: 0.45em; text-transform: uppercase;
+    color: var(--burn); margin-bottom: 1.25rem;
     display: flex; align-items: center; gap: 1rem;
   }
-  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--ash); opacity: 0.4; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--ink); opacity: 0.15; }
 
-  /* ── PORTAL GRID ── */
   .portals {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.5rem; margin-bottom: 4rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem; margin-bottom: 3rem;
   }
-  .portals:empty { display: none; }
-  .portals:empty + .section-label-wrap { display: none; }
-
-  /* hide section if no portals in it */
-  .section-wrap { display: contents; }
-  .section-wrap.empty { display: none; }
 
   .portal-card {
-    border: 1px solid var(--ash); padding: 1.5rem;
+    border: 1px solid var(--ink); padding: 1.25rem;
     position: relative; text-decoration: none; color: inherit;
-    display: block; transition: border-color 0.2s, transform 0.2s;
-    background: var(--static); overflow: hidden;
+    display: block; background: var(--card-bg);
+    transition: border-color 0.2s, transform 0.2s; overflow: hidden;
   }
-  .portal-card::before {
-    content: ''; position: absolute; inset: 0;
-    background: repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(255,255,255,0.01) 30px, rgba(255,255,255,0.01) 31px);
-  }
-
-  .portal-card.open { border-color: rgba(200,230,0,0.3); }
-  .portal-card.open:hover { border-color: var(--acid); transform: translate(-2px,-2px); cursor: pointer; }
+  .portal-card.open:hover { border-color: var(--burn); transform: translate(-2px,-2px); cursor: pointer; }
   .portal-card.open:hover .portal-enter { opacity: 1; }
-  .portal-card.coming { opacity: 0.6; cursor: not-allowed; }
-  .portal-card.closed { opacity: 0.35; cursor: not-allowed; }
+  .portal-card.coming { background: var(--concrete); opacity: 0.7; cursor: not-allowed; }
+  .portal-card.closed { background: var(--concrete); opacity: 0.5; cursor: not-allowed; }
 
   .portal-num {
-    font-family: 'VT323', monospace; font-size: 3.5rem; line-height: 1;
-    color: var(--ash); opacity: 0.4; position: absolute; top: 0.5rem; right: 1rem;
+    font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; line-height: 1;
+    color: var(--ink); opacity: 0.06; position: absolute; top: 0; right: 0.5rem;
   }
   .portal-status {
-    font-family: 'Oswald', sans-serif; font-weight: 400;
-    font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.75rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem;
   }
-  .open .portal-status   { color: var(--acid); }
-  .coming .portal-status { color: var(--rust); }
-  .closed .portal-status { color: var(--ash); }
+  .open .portal-status   { color: var(--burn); }
+  .coming .portal-status { color: var(--mid); }
+  .closed .portal-status { color: var(--mid); }
 
   .portal-title {
-    font-family: 'VT323', monospace; font-size: 1.8rem;
-    line-height: 1.1; color: var(--paper); margin-bottom: 0.5rem;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem;
+    line-height: 1; color: var(--ink); margin-bottom: 0.4rem; letter-spacing: 0.04em;
   }
   .closed .portal-title { text-decoration: line-through; opacity: 0.5; }
-
   .portal-desc {
-    font-size: 0.78rem; color: var(--ash); line-height: 1.5; margin-bottom: 1rem;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 300;
+    font-size: 0.8rem; color: var(--mid); line-height: 1.5; margin-bottom: 0.75rem;
   }
   .portal-dates {
-    font-family: 'VT323', monospace; font-size: 0.85rem; color: var(--ash);
-    border-top: 1px solid rgba(90,82,72,0.3); padding-top: 0.75rem;
+    font-family: 'Courier Prime', monospace; font-size: 0.65rem; color: var(--mid);
+    border-top: 1px solid rgba(20,18,16,0.1); padding-top: 0.5rem;
     display: flex; justify-content: space-between;
   }
   .portal-enter {
-    font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 0.65rem;
-    letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--acid); margin-top: 0.75rem; opacity: 0; transition: opacity 0.2s;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--burn); margin-top: 0.5rem; opacity: 0; transition: opacity 0.2s; display: block;
   }
   .countdown {
-    font-family: 'VT323', monospace; font-size: 1rem;
-    color: var(--rust); margin-top: 0.5rem;
+    font-family: 'Courier Prime', monospace; font-size: 0.8rem; color: var(--mid); margin-top: 0.4rem;
   }
 
-  /* ── LOADING / ERROR STATES ── */
   .loading-msg {
-    font-family: 'VT323', monospace; font-size: 1.2rem;
-    color: var(--ash); text-align: center; padding: 3rem 0;
-    letter-spacing: 0.2em;
+    font-family: 'Courier Prime', monospace; font-size: 0.9rem; color: var(--mid);
+    text-align: center; padding: 3rem 0; letter-spacing: 0.2em;
   }
-  .loading-msg .blink { color: var(--acid); }
 
-  /* ── TICKER ── */
   .signal-strip {
-    font-family: 'VT323', monospace; font-size: 0.85rem; color: var(--ash);
+    font-family: 'Courier Prime', monospace; font-size: 0.72rem; color: var(--mid);
     overflow: hidden; white-space: nowrap;
-    border-top: 1px solid rgba(90,82,72,0.3); padding: 0.5rem 0; margin-bottom: 3rem;
+    border-top: 1px solid rgba(20,18,16,0.12); border-bottom: 1px solid rgba(20,18,16,0.12);
+    padding: 0.45rem 0; margin-bottom: 3rem; background: var(--concrete);
+    margin-left: -2rem; margin-right: -2rem;
   }
-  .signal-strip span { display: inline-block; animation: scroll-left 30s linear infinite; }
+  .signal-strip span { display: inline-block; animation: scroll-left 32s linear infinite; }
   @keyframes scroll-left { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
 
-  /* ── NOTIFY ── */
   .notify-block {
-    border: 1px solid var(--ash); padding: 2rem;
-    background: var(--static); position: relative; overflow: hidden; margin-bottom: 3rem;
+    background: var(--ink); padding: 2rem; margin-bottom: 3rem;
+    position: relative; overflow: hidden;
   }
   .notify-block::after {
     content: 'SUBSCRIBE'; position: absolute; bottom: -1.5rem; right: 1rem;
-    font-family: 'VT323', monospace; font-size: 7rem; color: var(--rust);
-    opacity: 0.04; line-height: 1; pointer-events: none;
+    font-family: 'Bebas Neue', sans-serif; font-size: 7rem;
+    color: var(--white); opacity: 0.04; line-height: 1; pointer-events: none;
   }
-  .notify-block h2 { font-family: 'VT323', monospace; font-size: 2rem; margin-bottom: 0.5rem; color: var(--paper); }
-  .notify-block p  { font-size: 0.8rem; color: var(--ash); max-width: 480px; line-height: 1.6; margin-bottom: 1.25rem; }
-  .notify-form { display: flex; gap: 0; max-width: 420px; }
+  .notify-block h2 {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2rem;
+    margin-bottom: 0.4rem; color: var(--white); letter-spacing: 0.04em;
+  }
+  .notify-block p {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 300;
+    font-size: 0.8rem; color: rgba(244,241,234,0.5);
+    max-width: 480px; line-height: 1.6; margin-bottom: 1.25rem;
+  }
+  .notify-form { display: flex; max-width: 420px; }
   .notify-input {
-    flex: 1; background: var(--black); border: 1px solid var(--ash); border-right: none;
-    padding: 0.6rem 1rem; color: var(--paper); font-family: 'Special Elite', cursive;
-    font-size: 0.85rem; outline: none; transition: border-color 0.2s;
+    flex: 1; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.18); border-right: none;
+    padding: 0.6rem 1rem; color: var(--white);
+    font-family: 'Courier Prime', monospace; font-size: 0.8rem; outline: none;
   }
-  .notify-input:focus { border-color: var(--acid); }
-  .notify-input::placeholder { color: var(--ash); opacity: 0.5; }
+  .notify-input:focus { border-color: var(--burn); }
+  .notify-input::placeholder { color: rgba(244,241,234,0.3); }
   .notify-btn {
-    background: var(--rust); border: 1px solid var(--rust); color: var(--paper);
-    padding: 0.6rem 1.25rem; font-family: 'Oswald', sans-serif; font-weight: 700;
-    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
-    cursor: pointer; transition: background 0.2s;
+    background: var(--burn); border: 1px solid var(--burn); color: var(--white);
+    padding: 0.6rem 1.25rem; font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 0.7rem; letter-spacing: 0.2em;
+    text-transform: uppercase; cursor: pointer; transition: background 0.2s;
   }
-  .notify-btn:hover { background: #d4561f; }
+  .notify-btn:hover { background: #a82b06; }
 
-  /* ── FOOTER ── */
   footer {
-    border-top: 1px solid var(--ash); padding: 1.5rem 2rem;
-    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    border-top: 1px solid rgba(20,18,16,0.15); padding: 1.5rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem; background: var(--concrete);
   }
-  footer p { font-family: 'VT323', monospace; font-size: 0.85rem; color: var(--ash); }
-  footer a { color: var(--ash); text-decoration: none; transition: color 0.2s; }
-  footer a:hover { color: var(--acid); }
+  footer p { font-family: 'Courier Prime', monospace; font-size: 0.72rem; color: var(--mid); }
+  footer a { color: var(--mid); text-decoration: none; transition: color 0.2s; }
+  footer a:hover { color: var(--burn); }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-noise"></div>
   <div class="band-name">KLAXON<br><span>HICKS</span></div>
-  <div class="series-title">SIGNAL NOISE — <em>A series of digital installations</em></div>
-  <div class="header-meta" id="header-meta">// LOADING TRANSMISSIONS &nbsp;&nbsp; <span class="blink">█</span></div>
+  <div class="series-title">Signal Noise — <em>A series of digital installations</em></div>
+  <div class="header-meta" id="header-meta">// Loading transmissions &nbsp;&nbsp; <span class="blink">█</span></div>
 </header>
 
 <main>
-
   <div class="status-bar">
     <div class="status-item"><div class="dot dot-open"></div> Open now</div>
     <div class="status-item"><div class="dot dot-soon"></div> Coming soon</div>
@@ -254,82 +203,66 @@
   </div>
 
   <div id="portal-container">
-    <div class="loading-msg">SCANNING FOR SIGNALS <span class="blink">█</span></div>
+    <div class="loading-msg">Scanning for signals <span class="blink">█</span></div>
   </div>
 
   <div class="signal-strip">
-    <span>
-      &nbsp;&nbsp;&nbsp;&nbsp;KLAXON HICKS // SIGNAL NOISE // PERTH WA // ALL PORTALS ARE TEMPORARY // ENTER WHILE THEY'RE OPEN // NO ARCHIVE // NO REPLAY // ONLY NOW &nbsp;&nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;&nbsp; KLAXON HICKS // SIGNAL NOISE // PERTH WA // ALL PORTALS ARE TEMPORARY // ENTER WHILE THEY'RE OPEN // NO ARCHIVE // NO REPLAY // ONLY NOW &nbsp;&nbsp;&nbsp;&nbsp;
-    </span>
+    <span>&nbsp;&nbsp;&nbsp;&nbsp;KLAXON HICKS // SIGNAL NOISE // PERTH WA // ALL PORTALS ARE TEMPORARY // ENTER WHILE THEY'RE OPEN // NO ARCHIVE // NO REPLAY // ONLY NOW &nbsp;&nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;&nbsp; KLAXON HICKS // SIGNAL NOISE // PERTH WA // ALL PORTALS ARE TEMPORARY // NO ARCHIVE // NO REPLAY // ONLY NOW &nbsp;&nbsp;&nbsp;&nbsp;</span>
   </div>
 
   <div class="notify-block">
-    <h2>DON'T MISS THE NEXT PORTAL</h2>
+    <h2>Don't miss the next portal</h2>
     <p>Portals open and close. No archive, no replay. Drop your email and we'll signal you when the next one goes live — before it's gone.</p>
-    <div class="notify-form">
-      <input class="notify-input" type="email" placeholder="your@email.com">
-      <button class="notify-btn">Signal me</button>
+    <div class="notify-form" id="notify-form">
+      <input class="notify-input" type="email" id="notify-email" placeholder="your@email.com">
+      <button class="notify-btn" id="notify-btn" onclick="submitEmail()">Signal me</button>
     </div>
+    <div id="notify-msg" style="display:none; font-family:'Courier Prime',monospace; font-size:0.85rem; margin-top:0.75rem;"></div>
   </div>
-
 </main>
 
 <footer>
-  <p>© KLAXON HICKS — SIGNAL NOISE SERIES — PERTH WA</p>
-  <p><a href="#">@klaxonhicks</a> &nbsp; // &nbsp; <a href="#">POLLYPOTLUCK.PALAVER</a></p>
+  <p>© Klaxon Hicks — Signal Noise — Perth WA</p>
+  <p><a href="#">@klaxonhicks</a> &nbsp; // &nbsp; <a href="#">pollypotluck.palaver</a></p>
 </footer>
 
 <script>
-  // ── CONFIG ── swap this ID if you ever move the Sheet
-  const SHEET_ID = '1C6tbG23rLBysLJypD_FCJW97dp-xfazID7yReJhLJBw';
+  const SHEET_ID  = '1C6tbG23rLBysLJypD_FCJW97dp-xfazID7yReJhLJBw';
   const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`;
 
-  // ── DATE HELPERS ──
   function parseDate(str) {
     if (!str) return null;
-    // accepts DD/MM/YYYY
     const parts = str.trim().split('/');
-    if (parts.length === 3) {
-      return new Date(+parts[2], +parts[1] - 1, +parts[0]);
-    }
+    if (parts.length === 3) return new Date(+parts[2], +parts[1]-1, +parts[0]);
     return new Date(str);
   }
-
-  function getStatus(openDate, closeDate) {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    const open  = parseDate(openDate);
-    const close = parseDate(closeDate);
-    if (!open) return 'coming';
-    if (now < open)  return 'coming';
-    if (now > close) return 'closed';
-    return 'open';
-  }
-
   function formatDate(str) {
     const d = parseDate(str);
     if (!d) return '—';
     return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
   }
-
+  function getStatus(openDate, closeDate) {
+    const now = new Date(); now.setHours(0,0,0,0);
+    const open  = parseDate(openDate);
+    const close = parseDate(closeDate);
+    if (!open)       return 'coming';
+    if (now < open)  return 'coming';
+    if (now > close) return 'closed';
+    return 'open';
+  }
   function daysUntil(str) {
     const d = parseDate(str);
     if (!d) return null;
     const now = new Date(); now.setHours(0,0,0,0);
-    const diff = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
-    return diff;
+    return Math.ceil((d - now) / (1000*60*60*24));
   }
 
-  // ── BUILD A PORTAL CARD ──
   function buildCard(portal, index) {
     const status = getStatus(portal.open_date, portal.close_date);
     const num    = String(index + 1).padStart(2, '0');
-
-    const card = document.createElement(status === 'open' ? 'a' : 'div');
+    const card   = document.createElement(status === 'open' ? 'a' : 'div');
     card.className = `portal-card ${status}`;
-    if (status === 'open' && portal.portal_id) {
-      card.href = `${portal.portal_id}.html`;
-    }
+    if (status === 'open' && portal.portal_id) card.href = `${portal.portal_id}.html`;
 
     let statusLabel = '';
     if (status === 'open')   statusLabel = '● Live now';
@@ -339,19 +272,13 @@
     let countdownHTML = '';
     if (status === 'coming') {
       const days = daysUntil(portal.open_date);
-      if (days !== null) {
-        countdownHTML = `<div class="countdown">OPENS IN: ${days} DAY${days !== 1 ? 'S' : ''}</div>`;
-      }
+      if (days !== null) countdownHTML = `<div class="countdown">Opens in ${days} day${days !== 1 ? 's' : ''}</div>`;
     }
 
     let datesHTML = '';
-    if (status === 'open') {
-      datesHTML = `<span>OPEN: ${formatDate(portal.open_date)}</span><span>CLOSES: ${formatDate(portal.close_date)}</span>`;
-    } else if (status === 'coming') {
-      datesHTML = `<span>OPENS: ${formatDate(portal.open_date)}</span><span>CLOSES: ${formatDate(portal.close_date)}</span>`;
-    } else {
-      datesHTML = `<span>WAS OPEN: ${formatDate(portal.open_date)}</span><span>GONE</span>`;
-    }
+    if (status === 'open')        datesHTML = `<span>Open: ${formatDate(portal.open_date)}</span><span>Closes: ${formatDate(portal.close_date)}</span>`;
+    else if (status === 'coming') datesHTML = `<span>Opens: ${formatDate(portal.open_date)}</span><span>Closes: ${formatDate(portal.close_date)}</span>`;
+    else                          datesHTML = `<span>Was open: ${formatDate(portal.open_date)}</span><span>Gone</span>`;
 
     card.innerHTML = `
       <div class="portal-num">${num}</div>
@@ -365,11 +292,9 @@
     return card;
   }
 
-  // ── RENDER ALL PORTALS ──
   function renderPortals(portals) {
     const container = document.getElementById('portal-container');
     container.innerHTML = '';
-
     const open   = portals.filter(p => getStatus(p.open_date, p.close_date) === 'open');
     const coming = portals.filter(p => getStatus(p.open_date, p.close_date) === 'coming');
     const closed = portals.filter(p => getStatus(p.open_date, p.close_date) === 'closed');
@@ -377,12 +302,10 @@
     function section(label, list, startIndex) {
       if (list.length === 0) return;
       const wrap = document.createElement('div');
-
-      const lbl = document.createElement('div');
+      const lbl  = document.createElement('div');
       lbl.className = 'section-label';
       lbl.textContent = label;
       wrap.appendChild(lbl);
-
       const grid = document.createElement('div');
       grid.className = 'portals';
       list.forEach((p, i) => grid.appendChild(buildCard(p, startIndex + i)));
@@ -393,51 +316,73 @@
     section('Open portals', open, 0);
     section('Incoming transmissions', coming, open.length);
     section('Closed / archived', closed, open.length + coming.length);
-
-    // update header meta
-    const meta = document.getElementById('header-meta');
-    meta.innerHTML = `// TRANSMITTING FROM PERTH, WA &nbsp;&nbsp; PORTALS: ${open.length} OPEN &nbsp;&nbsp; <span class="blink">█</span>`;
+    document.getElementById('header-meta').innerHTML =
+      `// Transmitting from Perth, WA &nbsp;&nbsp; Portals: ${open.length} open &nbsp;&nbsp; <span class="blink">█</span>`;
   }
 
-  // ── FETCH FROM GOOGLE SHEETS ──
   async function loadPortals() {
     try {
       const res  = await fetch(SHEET_URL);
       const text = await res.text();
-
-      // Google wraps the JSON in a callback — strip it
       const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, ''));
-      const rows = json.table.rows;
-      const cols = json.table.cols.map(c => c.label.toLowerCase().replace(/\s+/g, '_'));
-
-      const portals = rows
-        .filter(r => r.c && r.c[0] && r.c[0].v) // skip empty rows
+      const cols = json.table.cols.map(c => c.label.toLowerCase().replace(/\s+/g,'_'));
+      const portals = json.table.rows
+        .filter(r => r.c && r.c[0] && r.c[0].v)
         .map(r => {
           const obj = {};
           cols.forEach((col, i) => {
             obj[col] = r.c[i] ? (r.c[i].f || r.c[i].v || '') : '';
-            // Google Sheets returns dates as Date objects — convert to string
             if (obj[col] && typeof obj[col] === 'string' && obj[col].startsWith('Date(')) {
-              const parts = obj[col].replace('Date(','').replace(')','').split(',');
-              const d = new Date(+parts[0], +parts[1], +parts[2]);
+              const p = obj[col].replace('Date(','').replace(')','').split(',');
+              const d = new Date(+p[0], +p[1], +p[2]);
               obj[col] = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
             }
           });
           return obj;
         });
-
       renderPortals(portals);
-
-    } catch (err) {
-      console.error('Signal Noise: failed to load portals', err);
+    } catch(err) {
+      console.error('Signal Noise:', err);
       document.getElementById('portal-container').innerHTML =
-        `<div class="loading-msg">SIGNAL LOST — CHECK BACK SOON <span class="blink">█</span></div>`;
+        `<div class="loading-msg">Signal lost — check back soon <span class="blink">█</span></div>`;
       document.getElementById('header-meta').innerHTML =
-        `// TRANSMISSION ERROR &nbsp;&nbsp; <span class="blink">█</span>`;
+        `// Transmission error &nbsp;&nbsp; <span class="blink">█</span>`;
     }
   }
 
   loadPortals();
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwo9PrXu9ThToXojFajGfzmjtaaGTF6zOtdSJSAKHIE0M1wC4Ojwq8G52AZRQGWDw/exec';
+
+  async function submitEmail() {
+    const input = document.getElementById('notify-email');
+    const btn   = document.getElementById('notify-btn');
+    const email = input.value.trim();
+    if (!email || !email.includes('@')) { showMsg('Enter a valid email address', 'var(--burn)'); return; }
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      document.getElementById('notify-form').style.display = 'none';
+      showMsg("// Signal received — we'll be in touch", 'var(--white)');
+    } catch(err) {
+      btn.textContent = 'Signal me';
+      btn.disabled = false;
+      showMsg('Transmission failed — try again', 'var(--burn)');
+    }
+  }
+
+  function showMsg(text, color) {
+    const msg = document.getElementById('notify-msg');
+    msg.textContent = text; msg.style.color = color; msg.style.display = 'block';
+  }
+
+  document.getElementById('notify-email')
+    .addEventListener('keydown', e => { if (e.key === 'Enter') submitEmail(); });
 </script>
 
 </body>

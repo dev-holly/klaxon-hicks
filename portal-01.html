@@ -5,332 +5,262 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIGNAL NOISE — Portal</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Special+Elite&family=Oswald:wght@200;400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=Courier+Prime:wght@400;700&display=swap');
 
   :root {
-    --black:  #0a0804;
-    --paper:  #d4c9a8;
-    --rust:   #b84a1e;
-    --acid:   #c8e600;
-    --ash:    #5a5248;
-    --static: #1a1714;
+    --white:    #f4f1ea;
+    --concrete: #e6e2d8;
+    --ink:      #141210;
+    --mid:      #7a756e;
+    --burn:     #c23308;
+    --card-bg:  #f9f7f2;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
 
   body {
-    background-color: var(--black);
-    color: var(--paper);
-    font-family: 'Special Elite', cursive;
+    background-color: var(--white);
+    color: var(--ink);
+    font-family: 'Barlow Condensed', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
-    cursor: crosshair;
-  }
-
-  /* grain */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 999; opacity: 0.4;
-  }
-
-  /* scanlines */
-  body::after {
-    content: '';
-    position: fixed; inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
-    pointer-events: none; z-index: 998;
   }
 
   /* ── NAV ── */
   nav {
     padding: 1rem 2rem;
-    border-bottom: 1px solid var(--ash);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    border-bottom: 1px solid rgba(20,18,16,0.2);
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--concrete);
   }
   .nav-back {
-    font-family: 'Oswald', sans-serif; font-weight: 400;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 400;
     font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--ash); text-decoration: none; transition: color 0.2s;
-    display: flex; align-items: center; gap: 0.5rem;
+    color: var(--mid); text-decoration: none; transition: color 0.2s;
   }
-  .nav-back:hover { color: var(--acid); }
+  .nav-back:hover { color: var(--burn); }
   .nav-band {
-    font-family: 'VT323', monospace; font-size: 1.4rem;
-    color: var(--ash); letter-spacing: 0.1em;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem;
+    color: var(--mid); letter-spacing: 0.05em;
   }
-  .nav-band span { color: var(--rust); }
+  .nav-band span { color: var(--burn); }
 
   /* ── HERO ── */
   .portal-hero {
     padding: 4rem 2rem 3rem;
     max-width: 860px; margin: 0 auto;
-    border-bottom: 1px solid rgba(90,82,72,0.3);
+    border-bottom: 1px solid rgba(20,18,16,0.15);
   }
-
   .portal-meta {
-    font-family: 'Oswald', sans-serif; font-weight: 200;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 300;
     font-size: 0.65rem; letter-spacing: 0.5em; text-transform: uppercase;
-    color: var(--rust); margin-bottom: 1.5rem;
+    color: var(--burn); margin-bottom: 1.5rem;
     display: flex; align-items: center; gap: 1rem;
   }
-  .portal-meta::after {
-    content: ''; flex: 1; height: 1px;
-    background: var(--ash); opacity: 0.3;
-  }
+  .portal-meta::after { content: ''; flex: 1; height: 1px; background: var(--ink); opacity: 0.15; }
 
   .portal-title {
-    font-family: 'VT323', monospace;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(3rem, 10vw, 7rem);
-    line-height: 0.9;
-    color: var(--paper);
-    text-shadow: 2px 2px 0 var(--rust), 4px 4px 12px rgba(184,74,30,0.2);
-    margin-bottom: 2rem;
+    line-height: 0.9; color: var(--ink);
+    letter-spacing: 0.02em; margin-bottom: 2rem;
   }
-
   .portal-dates {
-    font-family: 'VT323', monospace; font-size: 0.9rem;
-    color: var(--ash); display: flex; gap: 2rem; flex-wrap: wrap;
+    font-family: 'Courier Prime', monospace; font-size: 0.78rem;
+    color: var(--mid); display: flex; gap: 2rem; flex-wrap: wrap;
   }
-  .portal-dates .live-dot {
+  .live-dot {
     width: 7px; height: 7px; border-radius: 50%;
-    background: var(--acid); display: inline-block;
-    box-shadow: 0 0 6px var(--acid);
-    animation: pulse 2s ease-in-out infinite; margin-right: 0.4rem;
+    background: var(--burn); display: inline-block;
+    margin-right: 0.4rem;
   }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-  /* ── MAIN CONTENT ── */
+  /* ── CONTENT ── */
   .portal-content {
-    max-width: 860px; margin: 0 auto;
-    padding: 0 2rem 4rem;
+    max-width: 860px; margin: 0 auto; padding: 0 2rem 4rem;
   }
 
-  /* ── SECTION DIVIDER ── */
   .section-divider {
-    font-family: 'Oswald', sans-serif; font-weight: 700;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
     font-size: 0.6rem; letter-spacing: 0.45em; text-transform: uppercase;
-    color: var(--rust); margin: 3.5rem 0 1.5rem;
+    color: var(--burn); margin: 3rem 0 1.5rem;
     display: flex; align-items: center; gap: 1rem;
   }
-  .section-divider::after {
-    content: ''; flex: 1; height: 1px;
-    background: var(--ash); opacity: 0.3;
-  }
+  .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--ink); opacity: 0.15; }
 
-  /* ── THE STORY ── */
+  /* ── STORY ── */
   .story-block {
-    padding: 2rem;
-    border-left: 2px solid var(--rust);
-    background: var(--static);
-    position: relative; overflow: hidden;
-    margin-bottom: 1rem;
-  }
-  .story-block::before {
-    content: '"';
-    font-family: 'VT323', monospace; font-size: 8rem;
-    color: var(--rust); opacity: 0.06;
-    position: absolute; top: -1rem; left: 0.5rem;
-    line-height: 1; pointer-events: none;
+    padding: 2rem; border-left: 2px solid var(--burn);
+    background: var(--card-bg); margin-bottom: 1rem;
   }
   .story-text {
-    font-size: 0.95rem; line-height: 1.9;
-    color: var(--paper); position: relative; z-index: 1;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 300;
+    font-size: 1rem; line-height: 1.8; color: var(--ink);
   }
   .story-text p + p { margin-top: 1.2rem; }
 
-  /* ── AUDIO PLAYER ── */
+  /* ── AUDIO ── */
   .audio-block {
-    background: var(--static);
-    border: 1px solid var(--ash);
-    padding: 1.5rem;
+    background: var(--card-bg); border: 1px solid var(--ink); padding: 1.5rem;
     position: relative; overflow: hidden;
   }
-  .audio-block::after {
-    content: '▶'; font-size: 8rem;
-    color: var(--rust); opacity: 0.04;
-    position: absolute; right: 1rem; top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none; line-height: 1;
-  }
   .audio-label {
-    font-family: 'Oswald', sans-serif; font-weight: 400;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 400;
     font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase;
-    color: var(--ash); margin-bottom: 0.75rem;
+    color: var(--mid); margin-bottom: 0.75rem;
   }
   .audio-title {
-    font-family: 'VT323', monospace; font-size: 1.6rem;
-    color: var(--paper); margin-bottom: 1.25rem; line-height: 1;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem;
+    color: var(--ink); margin-bottom: 1.25rem; line-height: 1;
+    letter-spacing: 0.04em;
   }
-
-  /* custom audio player */
-  .player {
-    display: flex; align-items: center; gap: 1rem;
-  }
+  .player { display: flex; align-items: center; gap: 1rem; }
   .play-btn {
     width: 44px; height: 44px; flex-shrink: 0;
-    background: var(--rust); border: none; cursor: pointer;
+    background: var(--burn); border: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s; position: relative;
+    transition: background 0.2s;
   }
-  .play-btn:hover { background: #d4561f; }
-  .play-btn svg { width: 16px; height: 16px; fill: var(--paper); }
-
+  .play-btn:hover { background: #a82b06; }
+  .play-btn svg { width: 16px; height: 16px; fill: var(--white); }
   .player-track { flex: 1; }
   .progress-bar {
-    width: 100%; height: 3px;
-    background: var(--ash); cursor: pointer;
-    position: relative; margin-bottom: 0.5rem;
+    width: 100%; height: 3px; background: rgba(20,18,16,0.15);
+    cursor: pointer; position: relative; margin-bottom: 0.5rem;
   }
-  .progress-fill {
-    height: 100%; background: var(--acid);
-    width: 0%; transition: width 0.1s linear;
-    pointer-events: none;
-  }
+  .progress-fill { height: 100%; background: var(--burn); width: 0%; transition: width 0.1s linear; pointer-events: none; }
   .player-times {
     display: flex; justify-content: space-between;
-    font-family: 'VT323', monospace; font-size: 0.8rem;
-    color: var(--ash);
+    font-family: 'Courier Prime', monospace; font-size: 0.72rem; color: var(--mid);
   }
 
-  /* ── IMAGE GRID ── */
+  /* ── IMAGES ── */
   .image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem;
   }
   .image-item {
-    aspect-ratio: 4/3;
-    overflow: hidden;
-    border: 1px solid rgba(90,82,72,0.3);
-    position: relative; cursor: zoom-in;
-    background: var(--static);
+    aspect-ratio: 4/3; overflow: hidden;
+    border: 1px solid rgba(20,18,16,0.2);
+    position: relative; cursor: zoom-in; background: var(--concrete);
   }
   .image-item img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    filter: grayscale(20%) contrast(1.05);
-    transition: transform 0.4s ease, filter 0.4s ease;
-    display: block;
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(15%) contrast(1.05);
+    transition: transform 0.4s ease, filter 0.4s ease; display: block;
   }
-  .image-item:hover img {
-    transform: scale(1.04);
-    filter: grayscale(0%) contrast(1.1);
-  }
+  .image-item:hover img { transform: scale(1.04); filter: grayscale(0%) contrast(1.1); }
   .image-caption {
     position: absolute; bottom: 0; left: 0; right: 0;
     padding: 0.5rem 0.75rem;
-    background: linear-gradient(transparent, rgba(10,8,4,0.85));
-    font-family: 'VT323', monospace; font-size: 0.85rem;
-    color: var(--ash); opacity: 0; transition: opacity 0.3s;
+    background: linear-gradient(transparent, rgba(20,18,16,0.7));
+    font-family: 'Courier Prime', monospace; font-size: 0.72rem;
+    color: var(--white); opacity: 0; transition: opacity 0.3s;
   }
   .image-item:hover .image-caption { opacity: 1; }
 
   /* ── LIGHTBOX ── */
   .lightbox {
     display: none; position: fixed; inset: 0;
-    background: rgba(10,8,4,0.95); z-index: 1000;
-    align-items: center; justify-content: center;
-    cursor: zoom-out;
+    background: rgba(20,18,16,0.92); z-index: 1000;
+    align-items: center; justify-content: center; cursor: zoom-out;
   }
   .lightbox.active { display: flex; }
-  .lightbox img {
-    max-width: 90vw; max-height: 90vh;
-    object-fit: contain;
-    filter: grayscale(10%) contrast(1.05);
-  }
+  .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; }
   .lightbox-close {
     position: absolute; top: 1.5rem; right: 1.5rem;
-    font-family: 'VT323', monospace; font-size: 2rem;
-    color: var(--ash); cursor: pointer; transition: color 0.2s;
-    background: none; border: none;
+    font-family: 'Bebas Neue', sans-serif; font-size: 2rem;
+    color: var(--mid); cursor: pointer; background: none; border: none;
+    transition: color 0.2s;
   }
-  .lightbox-close:hover { color: var(--acid); }
-
-  /* ── LYRIC FRAGMENT ── */
-  .lyric-fragment {
-    padding: 2.5rem 2rem;
-    border-top: 1px solid rgba(90,82,72,0.3);
-    border-bottom: 1px solid rgba(90,82,72,0.3);
-    text-align: center; position: relative;
-  }
-  .lyric-fragment::before {
-    content: '//';
-    font-family: 'VT323', monospace; font-size: 1rem;
-    color: var(--rust); opacity: 0.4;
-    position: absolute; left: 2rem; top: 50%; transform: translateY(-50%);
-  }
-  .lyric-text {
-    font-family: 'VT323', monospace; font-size: clamp(1.4rem, 4vw, 2.2rem);
-    line-height: 1.4; color: var(--paper);
-    max-width: 600px; margin: 0 auto;
-  }
-  .lyric-note {
-    font-family: 'Oswald', sans-serif; font-weight: 200;
-    font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--ash); margin-top: 1rem;
-  }
-
-  /* ── CLOSING ── */
-  .portal-closing {
-    margin-top: 4rem; padding-top: 2rem;
-    border-top: 1px solid rgba(90,82,72,0.3);
-    display: flex; justify-content: space-between;
-    align-items: flex-end; flex-wrap: wrap; gap: 1.5rem;
-  }
-  .closing-text {
-    font-family: 'VT323', monospace; font-size: 0.9rem;
-    color: var(--ash); line-height: 1.6; max-width: 340px;
-  }
-  .closing-text strong { color: var(--rust); font-weight: normal; }
-
-  .back-link {
-    font-family: 'Oswald', sans-serif; font-weight: 700;
-    font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--ash); text-decoration: none;
-    border: 1px solid var(--ash); padding: 0.6rem 1.2rem;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .back-link:hover { border-color: var(--acid); color: var(--acid); }
+  .lightbox-close:hover { color: var(--burn); }
 
   /* ── TICKER ── */
   .signal-strip {
-    font-family: 'VT323', monospace; font-size: 0.85rem; color: var(--ash);
+    font-family: 'Courier Prime', monospace; font-size: 0.72rem; color: var(--mid);
     overflow: hidden; white-space: nowrap;
-    border-top: 1px solid rgba(90,82,72,0.2);
-    border-bottom: 1px solid rgba(90,82,72,0.2);
-    padding: 0.5rem 0; margin: 2rem 0;
+    border-top: 1px solid rgba(20,18,16,0.12); border-bottom: 1px solid rgba(20,18,16,0.12);
+    padding: 0.45rem 0; margin: 2.5rem -2rem; background: var(--concrete);
   }
   .signal-strip span { display: inline-block; animation: scroll-left 35s linear infinite; }
   @keyframes scroll-left { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
 
-  /* ── LOADING STATE ── */
+  /* ── NOTIFY ── */
+  .notify-block {
+    background: var(--ink); padding: 2rem; margin-bottom: 2.5rem;
+    position: relative; overflow: hidden;
+  }
+  .notify-block::after {
+    content: 'SUBSCRIBE'; position: absolute; bottom: -1.5rem; right: 1rem;
+    font-family: 'Bebas Neue', sans-serif; font-size: 7rem;
+    color: var(--white); opacity: 0.04; line-height: 1; pointer-events: none;
+  }
+  .notify-block h2 {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2rem;
+    margin-bottom: 0.4rem; color: var(--white); letter-spacing: 0.04em;
+  }
+  .notify-block p {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 300;
+    font-size: 0.8rem; color: rgba(244,241,234,0.5);
+    max-width: 480px; line-height: 1.6; margin-bottom: 1.25rem;
+  }
+  .notify-form { display: flex; max-width: 420px; }
+  .notify-input {
+    flex: 1; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.18); border-right: none;
+    padding: 0.6rem 1rem; color: var(--white);
+    font-family: 'Courier Prime', monospace; font-size: 0.8rem; outline: none;
+  }
+  .notify-input:focus { border-color: var(--burn); }
+  .notify-input::placeholder { color: rgba(244,241,234,0.3); }
+  .notify-btn {
+    background: var(--burn); border: 1px solid var(--burn); color: var(--white);
+    padding: 0.6rem 1.25rem; font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 0.7rem; letter-spacing: 0.2em;
+    text-transform: uppercase; cursor: pointer; transition: background 0.2s;
+  }
+  .notify-btn:hover { background: #a82b06; }
+
+  /* ── CLOSING ── */
+  .portal-closing {
+    margin-top: 2.5rem; padding-top: 2rem;
+    border-top: 1px solid rgba(20,18,16,0.15);
+    display: flex; justify-content: space-between;
+    align-items: flex-end; flex-wrap: wrap; gap: 1.5rem;
+  }
+  .closing-text {
+    font-family: 'Courier Prime', monospace; font-size: 0.78rem;
+    color: var(--mid); line-height: 1.6; max-width: 340px;
+  }
+  .closing-text strong { color: var(--burn); font-weight: normal; }
+  .back-link {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--mid); text-decoration: none;
+    border: 1px solid var(--mid); padding: 0.6rem 1.2rem;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .back-link:hover { border-color: var(--burn); color: var(--burn); }
+
+  /* ── STATES ── */
   .portal-loading {
     text-align: center; padding: 6rem 2rem;
-    font-family: 'VT323', monospace; font-size: 1.2rem;
-    color: var(--ash); letter-spacing: 0.2em;
+    font-family: 'Courier Prime', monospace; font-size: 0.9rem;
+    color: var(--mid); letter-spacing: 0.2em;
   }
   .blink { animation: blink 1.1s step-end infinite; }
   @keyframes blink { 50% { opacity: 0; } }
-
-  /* ── CLOSED STATE ── */
-  .portal-closed {
-    text-align: center; padding: 6rem 2rem;
-  }
+  .portal-closed { text-align: center; padding: 6rem 2rem; }
   .closed-title {
-    font-family: 'VT323', monospace;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(3rem, 10vw, 6rem);
-    color: var(--ash); text-decoration: line-through;
-    opacity: 0.5; margin-bottom: 1rem;
+    color: var(--mid); text-decoration: line-through;
+    opacity: 0.5; margin-bottom: 1rem; letter-spacing: 0.04em;
   }
   .closed-msg {
-    font-family: 'Oswald', sans-serif; font-weight: 200;
-    font-size: 0.75rem; letter-spacing: 0.4em; text-transform: uppercase;
-    color: var(--ash);
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 300;
+    font-size: 0.85rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--mid);
   }
 </style>
 </head>
@@ -342,97 +272,80 @@
 </nav>
 
 <div id="portal-root">
-  <div class="portal-loading">OPENING TRANSMISSION <span class="blink">█</span></div>
+  <div class="portal-loading">Opening transmission <span class="blink">█</span></div>
 </div>
 
-<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
   <img id="lightbox-img" src="" alt="">
 </div>
 
 <script>
-  // ══════════════════════════════════════════════
+  // ══════════════════════════════════════
   // PORTAL CONFIG
-  // To create a new portal page, duplicate this file,
-  // rename it portal-XX.html, and update PORTAL_ID below.
-  // Everything else is pulled from your Google Sheet.
-  // ══════════════════════════════════════════════
-
+  // Duplicate this file, rename it portal-XX.html,
+  // and update PORTAL_ID below to match your Sheet.
+  // ══════════════════════════════════════
   const PORTAL_ID = 'portal-01';  // ← change this for each portal page
   const SHEET_ID  = '1C6tbG23rLBysLJypD_FCJW97dp-xfazID7yReJhLJBw';
   const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`;
 
-  // ── DRIVE URL CONVERTER ──
-  // Extracts the file ID from any Google Drive share link format
   function driveFileId(url) {
     if (!url) return null;
     const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
     return match ? match[1] : null;
   }
-
-  // Images: use Drive thumbnail API — works cross-origin, no CORS issues
-  // sz=s1200 requests a large version (up to 1200px on longest side)
   function driveEmbed(url) {
     if (!url) return '';
     const id = driveFileId(url);
     if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=s1200`;
     return url;
   }
-
-  // Audio: use the open resource URL format which streams without redirect loops
   function driveAudio(url) {
     if (!url) return '';
-    const id = driveFileId(url);
-    if (id) return `https://drive.google.com/uc?export=open&id=${id}`;
+    if (url.includes('drive.google.com')) {
+      const id = driveFileId(url);
+      if (id) return `https://drive.google.com/uc?export=open&id=${id}`;
+    }
     return url;
   }
 
-  // ── DATE HELPERS ──
   function parseDate(str) {
     if (!str) return null;
     const parts = str.trim().split('/');
     if (parts.length === 3) return new Date(+parts[2], +parts[1]-1, +parts[0]);
     return new Date(str);
   }
-
   function formatDate(str) {
     const d = parseDate(str);
     if (!d) return '—';
     return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
   }
-
   function getStatus(openDate, closeDate) {
     const now = new Date(); now.setHours(0,0,0,0);
     const open  = parseDate(openDate);
     const close = parseDate(closeDate);
-    if (!open) return 'coming';
+    if (!open)       return 'coming';
     if (now < open)  return 'coming';
     if (now > close) return 'closed';
     return 'open';
   }
 
-  // ── AUDIO PLAYER ──
   let audio = null;
   let isPlaying = false;
 
   function initPlayer(src, title) {
     audio = new Audio(src);
     audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('ended', () => {
-      isPlaying = false;
-      updatePlayBtn();
-    });
+    audio.addEventListener('ended', () => { isPlaying = false; updatePlayBtn(); });
     document.getElementById('audio-title').textContent = title;
   }
-
   function togglePlay() {
     if (!audio) return;
     if (isPlaying) { audio.pause(); isPlaying = false; }
     else           { audio.play();  isPlaying = true;  }
     updatePlayBtn();
   }
-
   function updatePlayBtn() {
     const btn = document.getElementById('play-btn');
     if (!btn) return;
@@ -440,33 +353,26 @@
       ? `<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`
       : `<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>`;
   }
-
   function updateProgress() {
     if (!audio || !audio.duration) return;
     const pct = (audio.currentTime / audio.duration) * 100;
     const fill = document.getElementById('progress-fill');
     if (fill) fill.style.width = pct + '%';
-    const cur  = document.getElementById('time-current');
-    const dur  = document.getElementById('time-duration');
+    const cur = document.getElementById('time-current');
+    const dur = document.getElementById('time-duration');
     if (cur) cur.textContent = fmtTime(audio.currentTime);
     if (dur) dur.textContent = fmtTime(audio.duration);
   }
-
   function seekTo(e) {
     if (!audio) return;
-    const bar = e.currentTarget;
-    const pct = e.offsetX / bar.offsetWidth;
+    const pct = e.offsetX / e.currentTarget.offsetWidth;
     audio.currentTime = pct * audio.duration;
   }
-
   function fmtTime(s) {
     if (isNaN(s)) return '0:00';
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${m}:${String(sec).padStart(2,'0')}`;
+    return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
   }
 
-  // ── LIGHTBOX ──
   function openLightbox(src) {
     document.getElementById('lightbox-img').src = src;
     document.getElementById('lightbox').classList.add('active');
@@ -476,61 +382,33 @@
     document.getElementById('lightbox-img').src = '';
   }
 
-  // ── RENDER PORTAL ──
   function renderPortal(portal) {
     const status = getStatus(portal.open_date, portal.close_date);
     const root   = document.getElementById('portal-root');
-
-    // update page title
-    document.title = `SIGNAL NOISE — ${portal.title || 'Portal'}`;
+    document.title = `Signal Noise — ${portal.title || 'Portal'}`;
 
     if (status === 'closed') {
       root.innerHTML = `
         <div class="portal-closed">
-          <div class="closed-title">${portal.title || 'PORTAL'}</div>
+          <div class="closed-title">${portal.title || 'Portal'}</div>
           <div class="closed-msg">This portal has closed. No archive. No replay.</div>
-          <br><br>
-          <a class="back-link" href="index.html">← Return to Signal Noise</a>
+          <br><br><a class="back-link" href="index.html">← Return to Signal Noise</a>
         </div>`;
       return;
     }
-
     if (status === 'coming') {
       root.innerHTML = `
         <div class="portal-closed">
-          <div class="closed-title" style="text-decoration:none;opacity:0.7">${portal.title || '??????????'}</div>
+          <div class="closed-title" style="text-decoration:none;opacity:0.6">${portal.title || '??????????'}</div>
           <div class="closed-msg">This portal is not yet open. Check back soon.</div>
-          <br><br>
-          <a class="back-link" href="index.html">← Return to Signal Noise</a>
+          <br><br><a class="back-link" href="index.html">← Return to Signal Noise</a>
         </div>`;
       return;
     }
 
-    // parse image URLs (comma separated)
-    const imageUrls = (portal.image_urls || '')
-      .split(',')
-      .map(u => u.trim())
-      .filter(Boolean)
-      .map(driveEmbed);
+    const imageUrls = (portal.image_urls || '').split(',').map(u => u.trim()).filter(Boolean).map(driveEmbed);
+    const audioSrc  = driveAudio(portal.audio_url || '');
 
-    const audioSrc = driveAudio(portal.audio_url || '');
-
-    // build images HTML
-    let imagesHTML = '';
-    if (imageUrls.length > 0) {
-      imagesHTML = `
-        <div class="section-divider">Images &amp; documents</div>
-        <div class="image-grid">
-          ${imageUrls.map((src, i) => `
-            <div class="image-item" onclick="openLightbox('${src}')">
-              <img src="${src}" alt="Portal image ${i+1}" loading="lazy">
-              <div class="image-caption">// image ${String(i+1).padStart(2,'0')}</div>
-            </div>
-          `).join('')}
-        </div>`;
-    }
-
-    // build audio HTML
     let audioHTML = '';
     if (audioSrc) {
       audioHTML = `
@@ -555,6 +433,19 @@
         </div>`;
     }
 
+    let imagesHTML = '';
+    if (imageUrls.length > 0) {
+      imagesHTML = `
+        <div class="section-divider">Images &amp; documents</div>
+        <div class="image-grid">
+          ${imageUrls.map((src, i) => `
+            <div class="image-item" onclick="openLightbox('${src}')">
+              <img src="${src}" alt="Portal image ${i+1}" loading="lazy">
+              <div class="image-caption">// image ${String(i+1).padStart(2,'0')}</div>
+            </div>`).join('')}
+        </div>`;
+    }
+
     root.innerHTML = `
       <div class="portal-hero">
         <div class="portal-meta">Signal Noise — ${portal.portal_id || 'Portal'}</div>
@@ -566,7 +457,6 @@
       </div>
 
       <div class="portal-content">
-
         ${portal.description ? `
           <div class="section-divider">The story</div>
           <div class="story-block">
@@ -576,11 +466,20 @@
           </div>` : ''}
 
         ${audioHTML}
-
         ${imagesHTML}
 
         <div class="signal-strip">
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;NO ARCHIVE // NO REPLAY // ONLY NOW &nbsp;&nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;&nbsp; KLAXON HICKS // SIGNAL NOISE // PERTH WA &nbsp;&nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;&nbsp; NO ARCHIVE // NO REPLAY // ONLY NOW &nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;No archive // No replay // Only now &nbsp;&nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;&nbsp; Klaxon Hicks // Signal Noise // Perth WA &nbsp;&nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;&nbsp; No archive // No replay // Only now &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+
+        <div class="notify-block">
+          <h2>Don't miss the next portal</h2>
+          <p>Portals open and close. No archive, no replay. Drop your email before it's gone.</p>
+          <div class="notify-form" id="notify-form">
+            <input class="notify-input" type="email" id="notify-email" placeholder="your@email.com">
+            <button class="notify-btn" id="notify-btn" onclick="submitEmail()">Signal me</button>
+          </div>
+          <div id="notify-msg" style="display:none; font-family:'Courier Prime',monospace; font-size:0.85rem; margin-top:0.75rem;"></div>
         </div>
 
         <div class="portal-closing">
@@ -590,57 +489,76 @@
           </div>
           <a class="back-link" href="index.html">← All portals</a>
         </div>
-
       </div>`;
 
-    // init audio after DOM is ready
-    if (audioSrc) {
-      initPlayer(audioSrc, portal.title || 'Untitled');
-    }
+    if (audioSrc) initPlayer(audioSrc, portal.title || 'Untitled');
   }
 
-  // ── FETCH FROM SHEET ──
   async function loadPortal() {
     try {
       const res  = await fetch(SHEET_URL);
       const text = await res.text();
       const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, ''));
-      const rows = json.table.rows;
       const cols = json.table.cols.map(c => c.label.toLowerCase().replace(/\s+/g,'_'));
-
-      const portals = rows
+      const portals = json.table.rows
         .filter(r => r.c && r.c[0] && r.c[0].v)
         .map(r => {
           const obj = {};
           cols.forEach((col, i) => {
             obj[col] = r.c[i] ? (r.c[i].f || r.c[i].v || '') : '';
             if (obj[col] && typeof obj[col] === 'string' && obj[col].startsWith('Date(')) {
-              const parts = obj[col].replace('Date(','').replace(')','').split(',');
-              const d = new Date(+parts[0], +parts[1], +parts[2]);
+              const p = obj[col].replace('Date(','').replace(')','').split(',');
+              const d = new Date(+p[0], +p[1], +p[2]);
               obj[col] = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
             }
           });
           return obj;
         });
-
       const portal = portals.find(p => p.portal_id === PORTAL_ID);
-
       if (!portal) {
         document.getElementById('portal-root').innerHTML =
-          `<div class="portal-loading">PORTAL NOT FOUND <span class="blink">█</span></div>`;
+          `<div class="portal-loading">Portal not found <span class="blink">█</span></div>`;
         return;
       }
-
       renderPortal(portal);
-
-    } catch (err) {
+    } catch(err) {
       console.error('Signal Noise portal error:', err);
       document.getElementById('portal-root').innerHTML =
-        `<div class="portal-loading">SIGNAL LOST <span class="blink">█</span></div>`;
+        `<div class="portal-loading">Signal lost <span class="blink">█</span></div>`;
     }
   }
 
   loadPortal();
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwo9PrXu9ThToXojFajGfzmjtaaGTF6zOtdSJSAKHIE0M1wC4Ojwq8G52AZRQGWDw/exec';
+
+  async function submitEmail() {
+    const input = document.getElementById('notify-email');
+    const btn   = document.getElementById('notify-btn');
+    const email = input ? input.value.trim() : '';
+    if (!email || !email.includes('@')) { showMsg('Enter a valid email address', 'var(--burn)'); return; }
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      document.getElementById('notify-form').style.display = 'none';
+      showMsg("// Signal received — we'll be in touch", 'var(--white)');
+    } catch(err) {
+      btn.textContent = 'Signal me';
+      btn.disabled = false;
+      showMsg('Transmission failed — try again', 'var(--burn)');
+    }
+  }
+
+  function showMsg(text, color) {
+    const msg = document.getElementById('notify-msg');
+    if (!msg) return;
+    msg.textContent = text; msg.style.color = color; msg.style.display = 'block';
+  }
 </script>
 
 </body>
