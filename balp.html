@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BALP — Big Arse Loose Party Band</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFE01B;
+    --hot-pink: #FF2D6B;
+    --electric-blue: #0057FF;
+    --orange: #FF6B1A;
+    --lime: #AAFF00;
+    --black: #0A0A0A;
+    --white: #FAFAFA;
+    --off-white: #F2EDE4;
+    --ink: #1A1A1A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── LOADING STATE ── */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: var(--black);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.4s ease;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+  .loading-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 8vw, 5rem);
+    color: var(--yellow);
+    letter-spacing: 0.1em;
+    animation: pulse 0.8s ease-in-out infinite alternate;
+  }
+  @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: var(--black);
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(255,224,27,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 30%, rgba(255,45,107,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 60% 80%, rgba(0,87,255,0.10) 0%, transparent 60%);
+    z-index: 0;
+  }
+
+  /* Noise texture overlay */
+  .hero-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .band-label {
+    display: inline-block;
+    background: var(--hot-pink);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    margin-bottom: 1.5rem;
+    transform: rotate(-1deg);
+  }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 22vw, 18rem);
+    line-height: 0.85;
+    letter-spacing: -0.02em;
+    color: var(--yellow);
+    text-shadow:
+      6px 6px 0 var(--hot-pink),
+      12px 12px 0 var(--electric-blue);
+    animation: heroEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes heroEntrance {
+    from { opacity: 0; transform: translateY(40px) skewY(2deg); }
+    to { opacity: 1; transform: translateY(0) skewY(0); }
+  }
+
+  .hero-full-name {
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(1rem, 3vw, 1.6rem);
+    color: var(--off-white);
+    margin-top: 1rem;
+    opacity: 0.85;
+    animation: heroEntrance 0.6s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .hero-location {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--lime);
+    animation: heroEntrance 0.6s 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    animation: bounce 2s ease-in-out infinite;
+  }
+  .hero-scroll svg { width: 20px; opacity: 0.4; }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ── NAV STRIP ── */
+  .nav-strip {
+    background: var(--yellow);
+    overflow: hidden;
+    padding: 0.6rem 0;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .nav-ticker {
+    display: flex; gap: 3rem;
+    animation: ticker 20s linear infinite;
+    white-space: nowrap;
+  }
+
+  .nav-ticker a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--black);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-ticker a:hover { color: var(--hot-pink); }
+  .nav-ticker .sep { color: var(--hot-pink); }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+
+  .section-header {
+    display: flex; align-items: baseline; gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    color: var(--hot-pink);
+    line-height: 1;
+    opacity: 0.4;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    letter-spacing: 0.05em;
+    color: var(--white);
+  }
+
+  /* ── PHOTO GRID ── */
+  .photo-section { background: var(--black); }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto;
+    gap: 0.75rem;
+  }
+
+  .photo-card {
+    position: relative;
+    overflow: hidden;
+    background: #1a1a1a;
+    cursor: pointer;
+  }
+
+  .photo-card::after {
+    content: attr(data-caption);
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    padding: 2rem 1rem 1rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .photo-card:hover::after { opacity: 1; }
+
+  .photo-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+    filter: saturate(0.9);
+  }
+  .photo-card:hover img { transform: scale(1.04); filter: saturate(1.2); }
+
+  /* Mosaic layout */
+  .photo-card:nth-child(1) { grid-column: 1 / 8; grid-row: 1 / 3; min-height: 420px; }
+  .photo-card:nth-child(2) { grid-column: 8 / 13; grid-row: 1 / 2; min-height: 200px; }
+  .photo-card:nth-child(3) { grid-column: 8 / 10; grid-row: 2 / 3; min-height: 200px; }
+  .photo-card:nth-child(4) { grid-column: 10 / 13; grid-row: 2 / 3; min-height: 200px; }
+  .photo-card:nth-child(5) { grid-column: 1 / 5; grid-row: 3 / 4; min-height: 260px; }
+  .photo-card:nth-child(6) { grid-column: 5 / 9; grid-row: 3 / 4; min-height: 260px; }
+  .photo-card:nth-child(7) { grid-column: 9 / 13; grid-row: 3 / 4; min-height: 260px; }
+
+  /* Placeholder when no image */
+  .photo-placeholder {
+    width: 100%; height: 100%; min-height: inherit;
+    display: flex; align-items: center; justify-content: center;
+    background: #1c1c1c;
+    border: 1px dashed rgba(255,255,255,0.08);
+  }
+  .photo-placeholder span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── ABOUT ── */
+  .about-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) { .about-section { grid-template-columns: 1fr; } }
+
+  .about-bio {
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.8);
+  }
+
+  .about-bio p + p { margin-top: 1.2rem; }
+
+  .about-tags {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  .tag {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1.5px solid;
+  }
+  .tag-yellow { border-color: var(--yellow); color: var(--yellow); }
+  .tag-pink { border-color: var(--hot-pink); color: var(--hot-pink); }
+  .tag-blue { border-color: var(--electric-blue); color: #6B9FFF; }
+  .tag-lime { border-color: var(--lime); color: var(--lime); }
+
+  .about-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+  }
+  .stat-card:nth-child(1)::before { background: var(--yellow); }
+  .stat-card:nth-child(2)::before { background: var(--hot-pink); }
+  .stat-card:nth-child(3)::before { background: var(--electric-blue); }
+  .stat-card:nth-child(4)::before { background: var(--lime); }
+
+  .stat-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--white);
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.45);
+    margin-top: 0.25rem;
+  }
+
+  /* ── UPCOMING GIGS ── */
+  .gigs-section { border-top: 1px solid rgba(255,255,255,0.06); }
+
+  .gig-list { display: flex; flex-direction: column; gap: 0; }
+
+  .gig-row {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+
+  .gig-row:hover { background: rgba(255,255,255,0.02); }
+
+  .gig-date {
+    font-family: 'Bebas Neue', sans-serif;
+    line-height: 1;
+  }
+
+  .gig-date .day { font-size: 2.5rem; color: var(--yellow); }
+  .gig-date .month-year { font-size: 0.9rem; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; }
+
+  .gig-info .venue {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--white);
+  }
+
+  .gig-info .location {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.45);
+    margin-top: 0.2rem;
+  }
+
+  .gig-info .description {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.4rem;
+    font-style: italic;
+  }
+
+  .gig-action a {
+    display: inline-block;
+    padding: 0.6rem 1.4rem;
+    background: var(--hot-pink);
+    color: var(--white);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .gig-action a:hover { background: var(--yellow); color: var(--black); transform: translateY(-1px); }
+
+  .gig-action .sold-out {
+    padding: 0.6rem 1.4rem;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.3);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ── SETLISTS ── */
+  .setlists-section { background: #0d0d0d; }
+
+  .setlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .setlist-card {
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 1.5rem;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .setlist-card:hover { border-color: rgba(255,224,27,0.3); }
+
+  .setlist-card-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .setlist-venue {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--white);
+  }
+
+  .setlist-date {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+    margin-top: 0.2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .setlist-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.6rem;
+    background: rgba(255,224,27,0.12);
+    color: var(--yellow);
+    white-space: nowrap;
+  }
+
+  .setlist-songs { list-style: none; }
+
+  .setlist-songs li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.4rem 0;
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.65);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .setlist-songs li:last-child { border-bottom: none; }
+
+  .song-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.75rem;
+    color: var(--hot-pink);
+    min-width: 1.2rem;
+    opacity: 0.6;
+  }
+
+  .song-title { flex: 1; }
+
+  .song-artist {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.25);
+    font-style: italic;
+  }
+
+  .iwasthere-btn {
+    margin-top: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    background: none; border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.35);
+    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.5rem 1rem; cursor: pointer;
+    transition: all 0.2s; width: 100%;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .iwasthere-btn:hover {
+    border-color: var(--lime);
+    color: var(--lime);
+  }
+  .iwasthere-btn.active {
+    border-color: var(--lime);
+    background: rgba(170,255,0,0.08);
+    color: var(--lime);
+  }
+  .iwasthere-btn svg { width: 14px; }
+
+  /* ── MEMORABILIA ── */
+  .merch-section { border-top: 1px solid rgba(255,255,255,0.06); }
+
+  .merch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .merch-card {
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .merch-card:hover { transform: translateY(-4px); border-color: rgba(255,107,26,0.3); }
+
+  .merch-img {
+    width: 100%; aspect-ratio: 4/3;
+    background: #1a1a1a;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .merch-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .merch-type-badge {
+    position: absolute; top: 0.75rem; left: 0.75rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.6rem;
+  }
+  .badge-auction { background: var(--hot-pink); color: var(--white); }
+  .badge-sale { background: var(--electric-blue); color: var(--white); }
+  .badge-sold { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); }
+
+  .merch-body { padding: 1.25rem; }
+
+  .merch-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+  }
+
+  .merch-gig-link {
+    font-size: 0.75rem;
+    color: var(--orange);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    display: flex; align-items: center; gap: 0.3rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .merch-story {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 1rem;
+  }
+
+  .merch-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .merch-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    color: var(--yellow);
+    line-height: 1;
+  }
+
+  .merch-price .currency {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.3);
+    margin-right: 0.1rem;
+  }
+
+  .merch-auction-info {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.3);
+    margin-top: 0.15rem;
+  }
+
+  .buy-btn {
+    padding: 0.6rem 1.2rem;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.15s;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .buy-btn-active { background: var(--orange); color: var(--white); }
+  .buy-btn-active:hover { background: var(--yellow); color: var(--black); }
+  .buy-btn-sold { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.25); cursor: default; }
+
+  /* ── MUSIC / VIDEO ── */
+  .music-section { background: #080808; border-top: 1px solid rgba(255,255,255,0.06); }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .video-card { background: #111; overflow: hidden; }
+
+  .video-embed {
+    position: relative; padding-bottom: 56.25%;
+    background: #1a1a1a;
+  }
+  .video-embed iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: none;
+  }
+  .video-embed-placeholder {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 0.5rem;
+    background: #111;
+  }
+  .video-embed-placeholder span {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.15);
+  }
+
+  .video-info { padding: 1rem; }
+  .video-title { font-weight: 700; font-size: 0.95rem; }
+  .video-meta { font-size: 0.78rem; color: rgba(255,255,255,0.35); margin-top: 0.25rem; }
+
+  /* ── CONTACT ── */
+  .contact-section {
+    text-align: center;
+    padding: 6rem 2rem;
+    background: var(--yellow);
+    max-width: 100%;
+  }
+
+  .contact-section .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    color: var(--black);
+    letter-spacing: 0.03em;
+    line-height: 0.9;
+  }
+
+  .contact-tagline {
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: rgba(0,0,0,0.55);
+    margin: 1rem 0 2.5rem;
+  }
+
+  .contact-btn {
+    display: inline-block;
+    padding: 1rem 3rem;
+    background: var(--black);
+    color: var(--yellow);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 4px 4px 0 var(--hot-pink);
+  }
+  .contact-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--hot-pink);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--yellow);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-platform {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .footer-platform a {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+  }
+  .footer-platform a:hover { color: var(--yellow); }
+
+  /* ── DIVIDER ── */
+  .chaos-divider {
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg,
+      var(--yellow) 0%,
+      var(--hot-pink) 25%,
+      var(--electric-blue) 50%,
+      var(--lime) 75%,
+      var(--orange) 100%);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .photo-card:nth-child(n) {
+      grid-column: 1 / -1;
+      min-height: 250px;
+    }
+    .gig-row { grid-template-columns: 80px 1fr; }
+    .gig-action { grid-column: 1 / -1; }
+    .nav-ticker { animation-duration: 12s; }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loader">
+  <div class="loading-text">BALP</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="band-label">Artist Profile · Fremantle, WA</div>
+    <h1 class="hero-name">BALP</h1>
+    <p class="hero-full-name">Big Arse Loose Party Band</p>
+    <p class="hero-location">📍 Fremantle · Western Australia</p>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12l7 7 7-7"/>
+    </svg>
+  </div>
+</section>
+
+<!-- NAV STRIP -->
+<nav class="nav-strip">
+  <div class="nav-ticker" id="navTicker">
+    <a href="#photos">Photos</a><span class="sep">★</span>
+    <a href="#about">About</a><span class="sep">★</span>
+    <a href="#gigs">Gigs</a><span class="sep">★</span>
+    <a href="#setlists">Setlists</a><span class="sep">★</span>
+    <a href="#objects">Objects</a><span class="sep">★</span>
+    <a href="#music">Music</a><span class="sep">★</span>
+    <a href="#contact">Booking</a><span class="sep">★</span>
+    <!-- Duplicated for seamless loop -->
+    <a href="#photos">Photos</a><span class="sep">★</span>
+    <a href="#about">About</a><span class="sep">★</span>
+    <a href="#gigs">Gigs</a><span class="sep">★</span>
+    <a href="#setlists">Setlists</a><span class="sep">★</span>
+    <a href="#objects">Objects</a><span class="sep">★</span>
+    <a href="#music">Music</a><span class="sep">★</span>
+    <a href="#contact">Booking</a><span class="sep">★</span>
+  </div>
+</nav>
+
+<div class="chaos-divider"></div>
+
+<!-- PHOTOS -->
+<div id="photos" style="background: var(--black); padding: 4rem 2rem 0;">
+  <div style="max-width:1200px; margin: 0 auto;">
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <h2 class="section-title">The Band</h2>
+    </div>
+  </div>
+</div>
+<div style="max-width:1200px; margin: 0 auto; padding: 0 2rem 4rem;">
+  <div class="photo-grid" id="photoGrid">
+    <div class="photo-card" data-caption="BALP live at Mojo's Bar, North Freo">
+      <div class="photo-placeholder"><span>Band Photo · Main</span></div>
+    </div>
+    <div class="photo-card" data-caption="On stage, 2024">
+      <div class="photo-placeholder"><span>Live Shot</span></div>
+    </div>
+    <div class="photo-card" data-caption="Backstage">
+      <div class="photo-placeholder"><span>Behind the scenes</span></div>
+    </div>
+    <div class="photo-card" data-caption="Soundcheck">
+      <div class="photo-placeholder"><span>Soundcheck</span></div>
+    </div>
+    <div class="photo-card" data-caption="The crowd">
+      <div class="photo-placeholder"><span>Crowd shot</span></div>
+    </div>
+    <div class="photo-card" data-caption="Post-gig">
+      <div class="photo-placeholder"><span>Post-gig</span></div>
+    </div>
+    <div class="photo-card" data-caption="Close up">
+      <div class="photo-placeholder"><span>Detail</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="chaos-divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <span class="section-number">02</span>
+    <h2 class="section-title">About</h2>
+  </div>
+  <div class="about-section">
+    <div>
+      <div class="about-bio" id="bioCopy">
+        <p>BALP — the Big Arse Loose Party Band — is exactly what it sounds like. A collective of Fremantle musicians who believe a gig should feel like a celebration, not a performance.</p>
+        <p>Born out of a shared love for the songs that make rooms move, BALP brings together decades of live experience and an absolute refusal to take themselves too seriously.</p>
+        <p>If you've seen us, you know. If you haven't — come find out.</p>
+      </div>
+      <div class="about-tags">
+        <span class="tag tag-yellow">Cover Band</span>
+        <span class="tag tag-pink">Live Music</span>
+        <span class="tag tag-blue">Fremantle</span>
+        <span class="tag tag-lime">Function &amp; Festivals</span>
+      </div>
+    </div>
+    <div class="about-stats" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-number">—</div>
+        <div class="stat-label">Gigs Played</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">—</div>
+        <div class="stat-label">Songs in Rotation</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">—</div>
+        <div class="stat-label">Years Together</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">Freo</div>
+        <div class="stat-label">Home Base</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="chaos-divider"></div>
+
+<!-- GIGS -->
+<section id="gigs" class="gigs-section">
+  <div class="section-header">
+    <span class="section-number">03</span>
+    <h2 class="section-title">Upcoming Gigs</h2>
+  </div>
+  <div class="gig-list" id="gigList">
+
+    <!-- Sample gig rows — replace with Sheets API data -->
+    <div class="gig-row">
+      <div class="gig-date">
+        <div class="day">14</div>
+        <div class="month-year">JUN 2025</div>
+      </div>
+      <div class="gig-info">
+        <div class="venue">Mojo's Bar</div>
+        <div class="location">North Fremantle, WA</div>
+        <div class="description">Saturday night residency — expect the unexpected</div>
+      </div>
+      <div class="gig-action"><a href="#">Tickets →</a></div>
+    </div>
+
+    <div class="gig-row">
+      <div class="gig-date">
+        <div class="day">05</div>
+        <div class="month-year">JUL 2025</div>
+      </div>
+      <div class="gig-info">
+        <div class="venue">Fremantle Arts Centre</div>
+        <div class="location">Fremantle, WA</div>
+        <div class="description">Sunday Music — outdoor stage, all ages</div>
+      </div>
+      <div class="gig-action"><a href="#">Free Entry →</a></div>
+    </div>
+
+    <div class="gig-row">
+      <div class="gig-date">
+        <div class="day">19</div>
+        <div class="month-year">JUL 2025</div>
+      </div>
+      <div class="gig-info">
+        <div class="venue">Private Function</div>
+        <div class="location">Location TBC</div>
+        <div class="description">Corporate event — enquire for availability</div>
+      </div>
+      <div class="gig-action"><span class="sold-out">Closed</span></div>
+    </div>
+
+  </div>
+</section>
+
+<div class="chaos-divider"></div>
+
+<!-- SETLISTS -->
+<section id="setlists" class="setlists-section" style="max-width:100%; padding: 5rem 2rem;">
+  <div style="max-width:1200px; margin: 0 auto;">
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <h2 class="section-title">Past Setlists</h2>
+    </div>
+    <div class="setlist-grid" id="setlistGrid">
+
+      <!-- Sample setlist card -->
+      <div class="setlist-card">
+        <div class="setlist-card-header">
+          <div>
+            <div class="setlist-venue">Mojo's Bar</div>
+            <div class="setlist-date">Saturday 15 March 2025</div>
+          </div>
+          <div class="setlist-badge">18 Songs</div>
+        </div>
+        <ul class="setlist-songs">
+          <li><span class="song-num">01</span><span class="song-title">September</span><span class="song-artist">Earth, Wind &amp; Fire</span></li>
+          <li><span class="song-num">02</span><span class="song-title">Don't Stop Me Now</span><span class="song-artist">Queen</span></li>
+          <li><span class="song-num">03</span><span class="song-title">Superstition</span><span class="song-artist">Stevie Wonder</span></li>
+          <li><span class="song-num">04</span><span class="song-title">Mr. Brightside</span><span class="song-artist">The Killers</span></li>
+          <li><span class="song-num">05</span><span class="song-title">Shut Up and Dance</span><span class="song-artist">Walk the Moon</span></li>
+          <li style="color:rgba(255,255,255,0.25); font-style:italic; font-size:0.78rem; justify-content:center; padding-top:0.6rem;">+ 13 more songs</li>
+        </ul>
+        <button class="iwasthere-btn" onclick="toggleIWasThere(this)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          I Was There
+        </button>
+      </div>
+
+      <div class="setlist-card">
+        <div class="setlist-card-header">
+          <div>
+            <div class="setlist-venue">Fremantle Arts Centre</div>
+            <div class="setlist-date">Sunday 2 February 2025</div>
+          </div>
+          <div class="setlist-badge">14 Songs</div>
+        </div>
+        <ul class="setlist-songs">
+          <li><span class="song-num">01</span><span class="song-title">Dancing Queen</span><span class="song-artist">ABBA</span></li>
+          <li><span class="song-num">02</span><span class="song-title">Valerie</span><span class="song-artist">Amy Winehouse</span></li>
+          <li><span class="song-num">03</span><span class="song-title">Sweet Child O' Mine</span><span class="song-artist">Guns N' Roses</span></li>
+          <li><span class="song-num">04</span><span class="song-title">Redbone</span><span class="song-artist">Childish Gambino</span></li>
+          <li><span class="song-num">05</span><span class="song-title">Somebody That I Used to Know</span><span class="song-artist">Gotye</span></li>
+          <li style="color:rgba(255,255,255,0.25); font-style:italic; font-size:0.78rem; justify-content:center; padding-top:0.6rem;">+ 9 more songs</li>
+        </ul>
+        <button class="iwasthere-btn" onclick="toggleIWasThere(this)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          I Was There
+        </button>
+      </div>
+
+      <div class="setlist-card">
+        <div class="setlist-card-header">
+          <div>
+            <div class="setlist-venue">Private Function — Applecross</div>
+            <div class="setlist-date">Saturday 11 January 2025</div>
+          </div>
+          <div class="setlist-badge">20 Songs</div>
+        </div>
+        <ul class="setlist-songs">
+          <li><span class="song-num">01</span><span class="song-title">Uptown Funk</span><span class="song-artist">Bruno Mars</span></li>
+          <li><span class="song-num">02</span><span class="song-title">I Gotta Feeling</span><span class="song-artist">Black Eyed Peas</span></li>
+          <li><span class="song-num">03</span><span class="song-title">Happy</span><span class="song-artist">Pharrell Williams</span></li>
+          <li><span class="song-num">04</span><span class="song-title">Blinding Lights</span><span class="song-artist">The Weeknd</span></li>
+          <li><span class="song-num">05</span><span class="song-title">Old Town Road</span><span class="song-artist">Lil Nas X</span></li>
+          <li style="color:rgba(255,255,255,0.25); font-style:italic; font-size:0.78rem; justify-content:center; padding-top:0.6rem;">+ 15 more songs</li>
+        </ul>
+        <button class="iwasthere-btn" onclick="toggleIWasThere(this)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          I Was There
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="chaos-divider"></div>
+
+<!-- OBJECTS / MEMORABILIA -->
+<section id="objects" class="merch-section">
+  <div class="section-header">
+    <span class="section-number">05</span>
+    <h2 class="section-title">Objects &amp; Memorabilia</h2>
+  </div>
+  <p style="color:rgba(255,255,255,0.4); font-size:0.9rem; margin-bottom:2.5rem; max-width:600px;">
+    Pieces from our shows — props, costumes, picks, handwritten setlists. Each one comes with its story and a certificate of provenance.
+  </p>
+  <div class="merch-grid" id="objectsGrid">
+
+    <div class="merch-card">
+      <div class="merch-img">
+        <div class="photo-placeholder" style="min-height:0; height:100%;"><span>Object Photo</span></div>
+        <span class="merch-type-badge badge-auction">Auction</span>
+      </div>
+      <div class="merch-body">
+        <div class="merch-title">Handwritten Setlist — Mojo's Bar</div>
+        <a href="#setlists" class="merch-gig-link">
+          <svg width="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+          From: Mojo's Bar · 15 March 2025
+        </a>
+        <p class="merch-story">The original setlist written by hand before the show. Includes a last-minute swap scrawled in the margin when we decided to drop September and open with it instead.</p>
+        <div class="merch-footer">
+          <div>
+            <div class="merch-price"><span class="currency">A$</span>45</div>
+            <div class="merch-auction-info">Current bid · 2 days left</div>
+          </div>
+          <button class="buy-btn buy-btn-active">Bid Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="merch-card">
+      <div class="merch-img">
+        <div class="photo-placeholder" style="min-height:0; height:100%;"><span>Object Photo</span></div>
+        <span class="merch-type-badge badge-sale">For Sale</span>
+      </div>
+      <div class="merch-body">
+        <div class="merch-title">Guitar Pick — Fremantle Arts Centre</div>
+        <a href="#setlists" class="merch-gig-link">
+          <svg width="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+          From: Fremantle Arts Centre · 2 Feb 2025
+        </a>
+        <p class="merch-story">Custom BALP pick used throughout the entire Sunday Music set. The one that ended up in the crowd during the finale — retrieved and cleaned for posterity.</p>
+        <div class="merch-footer">
+          <div>
+            <div class="merch-price"><span class="currency">A$</span>15</div>
+            <div class="merch-auction-info">Fixed price · 1 available</div>
+          </div>
+          <button class="buy-btn buy-btn-active">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="merch-card">
+      <div class="merch-img">
+        <div class="photo-placeholder" style="min-height:0; height:100%;"><span>Object Photo</span></div>
+        <span class="merch-type-badge badge-sold">Sold</span>
+      </div>
+      <div class="merch-body">
+        <div class="merch-title">Costume Piece — NYE Sequin Jacket</div>
+        <a href="#setlists" class="merch-gig-link">
+          <svg width="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+          From: NYE Private Function · 31 Dec 2024
+        </a>
+        <p class="merch-story">The legendary gold sequin jacket worn for the midnight countdown. Has survived approximately 14 BALP NYE shows and counting. Comes with a certificate of heroic service.</p>
+        <div class="merch-footer">
+          <div>
+            <div class="merch-price" style="color:rgba(255,255,255,0.2)"><span class="currency">A$</span>220</div>
+            <div class="merch-auction-info">Sold to a proud Freo fan</div>
+          </div>
+          <button class="buy-btn buy-btn-sold" disabled>Sold</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="chaos-divider"></div>
+
+<!-- MUSIC / VIDEO -->
+<section id="music" class="music-section" style="max-width:100%; padding: 5rem 2rem;">
+  <div style="max-width:1200px; margin: 0 auto;">
+    <div class="section-header">
+      <span class="section-number">06</span>
+      <h2 class="section-title">Watch &amp; Listen</h2>
+    </div>
+    <!-- 
+      HOW TO ADD A VIDEO FROM GOOGLE DRIVE:
+      1. Upload your video to Google Drive
+      2. Right-click the file → Share → set to "Anyone with the link can view"
+      3. Copy the share link — it looks like:
+         https://drive.google.com/file/d/XXXXXXXXXXXXXXXXXXXXXXXXX/view?usp=sharing
+      4. Grab just the FILE_ID part (the long string between /d/ and /view)
+      5. Replace DRIVE_FILE_ID below with that string
+      6. The embed URL becomes: https://drive.google.com/file/d/DRIVE_FILE_ID/preview
+    -->
+    <div class="video-grid" id="videoGrid">
+
+      <!-- 
+        SAMPLE: replace DRIVE_FILE_ID_1 with your actual Google Drive file ID
+        e.g. src="https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms/preview"
+      -->
+      <div class="video-card">
+        <div class="video-embed">
+          <div class="video-embed-placeholder" id="placeholder-1">
+            <svg width="40" viewBox="0 0 24 24" fill="rgba(255,255,255,0.1)"><path d="M8 5v14l11-7z"/></svg>
+            <span>Add Drive File ID to Tracks sheet</span>
+          </div>
+          <!-- Uncomment and replace ID when ready:
+          <iframe
+            src="https://drive.google.com/file/d/DRIVE_FILE_ID_1/preview"
+            allowfullscreen
+            allow="autoplay"
+            style="position:absolute;inset:0;width:100%;height:100%;border:none;">
+          </iframe>
+          -->
+        </div>
+        <div class="video-info">
+          <div class="video-title">Live at Mojo's Bar — Full Set</div>
+          <div class="video-meta">15 March 2025 · North Fremantle</div>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-embed">
+          <div class="video-embed-placeholder" id="placeholder-2">
+            <svg width="40" viewBox="0 0 24 24" fill="rgba(255,255,255,0.1)"><path d="M8 5v14l11-7z"/></svg>
+            <span>Add Drive File ID to Tracks sheet</span>
+          </div>
+          <!-- Uncomment and replace ID when ready:
+          <iframe
+            src="https://drive.google.com/file/d/DRIVE_FILE_ID_2/preview"
+            allowfullscreen
+            allow="autoplay"
+            style="position:absolute;inset:0;width:100%;height:100%;border:none;">
+          </iframe>
+          -->
+        </div>
+        <div class="video-info">
+          <div class="video-title">Sunday Music — Fremantle Arts Centre</div>
+          <div class="video-meta">2 February 2025 · Fremantle</div>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-embed">
+          <div class="video-embed-placeholder" id="placeholder-3">
+            <svg width="40" viewBox="0 0 24 24" fill="rgba(255,255,255,0.1)"><path d="M8 5v14l11-7z"/></svg>
+            <span>Add Drive File ID to Tracks sheet</span>
+          </div>
+          <!-- Uncomment and replace ID when ready:
+          <iframe
+            src="https://drive.google.com/file/d/DRIVE_FILE_ID_3/preview"
+            allowfullscreen
+            allow="autoplay"
+            style="position:absolute;inset:0;width:100%;height:100%;border:none;">
+          </iframe>
+          -->
+        </div>
+        <div class="video-info">
+          <div class="video-title">Rehearsal Session — Highlights</div>
+          <div class="video-meta">January 2025</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div id="contact" class="contact-section">
+  <h2 class="section-title">Book BALP</h2>
+  <p class="contact-tagline">Weddings · Corporate · Festivals · Private Parties · Anything, really.</p>
+  <a href="mailto:balp@klaxonhicks.com" class="contact-btn">Get In Touch →</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">BALP</div>
+  <div class="footer-platform">
+    Part of <a href="artists.html">Klaxon Hicks Gallery</a> · Fremantle, WA
+  </div>
+</footer>
+
+<script>
+  // Hide loader
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+    }, 600);
+  });
+
+  // I Was There toggle
+  function toggleIWasThere(btn) {
+    btn.classList.toggle('active');
+    if (btn.classList.contains('active')) {
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" width="14"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> You Were There ✓`;
+    } else {
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" width="14"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> I Was There`;
+    }
+  }
+
+  // Smooth scroll for nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // ── SHEET CONFIG ──
+  // Same Sheet as Signal Noise index.html — no API key needed.
+  // Uses the same gviz/tq pattern. Just add new tabs to your existing Sheet.
+  // Sheet must be shared: File → Share → "Anyone with the link can view"
+  const SHEET_ID = '1C6tbG23rLBysLJypD_FCJW97dp-xfazID7yReJhLJBw';
+
+  async function fetchSheet(tab) {
+    try {
+      const url  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tab)}`;
+      const res  = await fetch(url);
+      const text = await res.text();
+      const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, ''));
+      const cols = json.table.cols.map(c => c.label.toLowerCase().replace(/\s+/g, '_'));
+      return json.table.rows
+        .filter(r => r.c && r.c[0] && r.c[0].v)
+        .map(r => {
+          const obj = {};
+          cols.forEach((col, i) => {
+            obj[col] = r.c[i] ? (r.c[i].f || r.c[i].v || '') : '';
+          });
+          return obj;
+        });
+    } catch(e) {
+      console.warn(`Could not load tab: ${tab}`, e);
+      return [];
+    }
+  }
+
+  // ── RENDER: GIGS ──
+  // Tab name: BALP_Gigs
+  // Columns:  date_day | date_month_year | venue | location | description | ticket_url | status
+  // status:   tickets | free | closed | sold_out
+  function renderGigs(rows) {
+    const list = document.getElementById('gigList');
+    if (!rows.length) return;
+    list.innerHTML = rows.map(r => {
+      const action = r.status === 'tickets'  ? `<a href="${r.ticket_url}">Tickets →</a>`
+                   : r.status === 'free'     ? `<a href="${r.ticket_url || '#'}">Free Entry →</a>`
+                   : r.status === 'sold_out' ? `<span class="sold-out">Sold Out</span>`
+                   :                           `<span class="sold-out">Closed</span>`;
+      return `
+        <div class="gig-row">
+          <div class="gig-date">
+            <div class="day">${r.date_day}</div>
+            <div class="month-year">${r.date_month_year}</div>
+          </div>
+          <div class="gig-info">
+            <div class="venue">${r.venue}</div>
+            <div class="location">${r.location}</div>
+            ${r.description ? `<div class="description">${r.description}</div>` : ''}
+          </div>
+          <div class="gig-action">${action}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── RENDER: SETLISTS ──
+  // Tab name: BALP_Setlists
+  // Columns:  gig_id | venue | date | song_title | original_artist
+  // Add one row per song — songs are grouped by gig_id automatically
+  function renderSetlists(rows) {
+    if (!rows.length) return;
+    const grid = document.getElementById('setlistGrid');
+    const gigs = {};
+    rows.forEach(r => {
+      if (!gigs[r.gig_id]) gigs[r.gig_id] = { venue: r.venue, date: r.date, songs: [] };
+      gigs[r.gig_id].songs.push({ title: r.song_title, artist: r.original_artist });
+    });
+    const PREVIEW = 5;
+    grid.innerHTML = Object.entries(gigs).map(([, g]) => {
+      const preview = g.songs.slice(0, PREVIEW);
+      const extra   = g.songs.length - PREVIEW;
+      return `
+        <div class="setlist-card">
+          <div class="setlist-card-header">
+            <div>
+              <div class="setlist-venue">${g.venue}</div>
+              <div class="setlist-date">${g.date}</div>
+            </div>
+            <div class="setlist-badge">${g.songs.length} Songs</div>
+          </div>
+          <ul class="setlist-songs">
+            ${preview.map((s, i) => `
+              <li>
+                <span class="song-num">${String(i+1).padStart(2,'0')}</span>
+                <span class="song-title">${s.title}</span>
+                <span class="song-artist">${s.artist}</span>
+              </li>`).join('')}
+            ${extra > 0 ? `<li style="color:rgba(255,255,255,0.25);font-style:italic;font-size:0.78rem;justify-content:center;padding-top:0.6rem;">+ ${extra} more songs</li>` : ''}
+          </ul>
+          <button class="iwasthere-btn" onclick="toggleIWasThere(this)">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            I Was There
+          </button>
+        </div>`;
+    }).join('');
+  }
+
+  // ── RENDER: OBJECTS / MEMORABILIA ──
+  // Tab name: BALP_Objects
+  // Columns:  title | gig_label | gig_id | story | price | type | sold | stripe_url | photo_url
+  // type:     auction | sale     sold: yes | no
+  // photo_url: Google Drive share URL (will be converted to thumbnail automatically)
+  function driveThumb(url) {
+    if (!url) return '';
+    const m = url.match(/\/d\/([\w-]+)/);
+    return m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w600` : url;
+  }
+
+  function renderObjects(rows) {
+    if (!rows.length) return;
+    const grid = document.getElementById('objectsGrid');
+    grid.innerHTML = rows.map(r => {
+      const isSold    = r.sold === 'yes';
+      const badge     = isSold ? 'badge-sold' : r.type === 'auction' ? 'badge-auction' : 'badge-sale';
+      const badgeText = isSold ? 'Sold' : r.type === 'auction' ? 'Auction' : 'For Sale';
+      const btn       = isSold
+        ? `<button class="buy-btn buy-btn-sold" disabled>Sold</button>`
+        : `<a href="${r.stripe_url}" class="buy-btn buy-btn-active">${r.type === 'auction' ? 'Bid Now' : 'Buy Now'}</a>`;
+      const photoSrc  = driveThumb(r.photo_url);
+      const imgHTML   = photoSrc
+        ? `<img src="${photoSrc}" alt="${r.title}" style="width:100%;height:100%;object-fit:cover;">`
+        : `<div class="photo-placeholder" style="min-height:0;height:100%;"><span>Object Photo</span></div>`;
+      return `
+        <div class="merch-card">
+          <div class="merch-img">
+            ${imgHTML}
+            <span class="merch-type-badge ${badge}">${badgeText}</span>
+          </div>
+          <div class="merch-body">
+            <div class="merch-title">${r.title}</div>
+            <a href="#setlists" class="merch-gig-link">
+              <svg width="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+              From: ${r.gig_label}
+            </a>
+            <p class="merch-story">${r.story}</p>
+            <div class="merch-footer">
+              <div>
+                <div class="merch-price" ${isSold ? 'style="color:rgba(255,255,255,0.2)"' : ''}>
+                  <span class="currency">A$</span>${r.price}
+                </div>
+              </div>
+              ${btn}
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── RENDER: VIDEOS (Google Drive) ──
+  // Tab name: BALP_Tracks
+  // Columns:  title | date_venue | drive_file_id
+  // drive_file_id: just the ID from your Drive share URL
+  //   Full URL:  https://drive.google.com/file/d/XXXXXXXXXX/view?usp=sharing
+  //   Just this:                                 ^^^^^^^^^^
+  // File must be shared: "Anyone with the link can view"
+  function renderVideos(rows) {
+    if (!rows.length) return;
+    const grid = document.getElementById('videoGrid');
+    grid.innerHTML = rows.map(r => {
+      const embedUrl = `https://drive.google.com/file/d/${r.drive_file_id}/preview`;
+      return `
+        <div class="video-card">
+          <div class="video-embed">
+            <iframe
+              src="${embedUrl}"
+              allowfullscreen allow="autoplay"
+              style="position:absolute;inset:0;width:100%;height:100%;border:none;"
+              loading="lazy">
+            </iframe>
+          </div>
+          <div class="video-info">
+            <div class="video-title">${r.title}</div>
+            <div class="video-meta">${r.date_venue}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── LOAD ALL DATA ──
+  // Uncomment loadLiveData() once you've added the four tabs to your Sheet
+  async function loadLiveData() {
+    const [gigs, setlists, objects, videos] = await Promise.all([
+      fetchSheet('BALP_Gigs'),
+      fetchSheet('BALP_Setlists'),
+      fetchSheet('BALP_Objects'),
+      fetchSheet('BALP_Tracks'),
+    ]);
+    renderGigs(gigs);
+    renderSetlists(setlists);
+    renderObjects(objects);
+    renderVideos(videos);
+  }
+
+  // ── ACTIVATE ──
+  // Remove the comment slashes below when your Sheet tabs are ready:
+  // loadLiveData();
+</script>
+</body>
+</html>
