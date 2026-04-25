@@ -788,26 +788,8 @@
 </div>
 <div style="max-width:1200px; margin: 0 auto; padding: 0 2rem 4rem;">
   <div class="photo-grid" id="photoGrid">
-    <div class="photo-card" data-caption="BALP live at Mojo's Bar, North Freo">
-      <div class="photo-placeholder"><span>Band Photo · Main</span></div>
-    </div>
-    <div class="photo-card" data-caption="On stage, 2024">
-      <div class="photo-placeholder"><span>Live Shot</span></div>
-    </div>
-    <div class="photo-card" data-caption="Backstage">
-      <div class="photo-placeholder"><span>Behind the scenes</span></div>
-    </div>
-    <div class="photo-card" data-caption="Soundcheck">
-      <div class="photo-placeholder"><span>Soundcheck</span></div>
-    </div>
-    <div class="photo-card" data-caption="The crowd">
-      <div class="photo-placeholder"><span>Crowd shot</span></div>
-    </div>
-    <div class="photo-card" data-caption="Post-gig">
-      <div class="photo-placeholder"><span>Post-gig</span></div>
-    </div>
-    <div class="photo-card" data-caption="Close up">
-      <div class="photo-placeholder"><span>Detail</span></div>
+    <div class="photo-card" style="grid-column:1/-1; min-height:200px;">
+      <div class="photo-placeholder"><span>Loading photos...</span></div>
     </div>
   </div>
 </div>
@@ -1384,15 +1366,40 @@
     }).join('');
   }
 
+  // ── RENDER: PHOTOS ──
+  // Tab name: BALP_Photos
+  // Columns:  title | drive_file_id | order
+  // drive_file_id: just the ID from your Drive share URL
+  // The mosaic grid layout is applied by nth-child CSS automatically
+  function renderPhotos(rows) {
+    if (!rows.length) return;
+    const grid = document.getElementById('photoGrid');
+    // Sort by order column if present
+    const sorted = [...rows].sort((a, b) => (parseInt(a.order) || 0) - (parseInt(b.order) || 0));
+    grid.innerHTML = sorted.map(r => {
+      const thumbUrl = `https://drive.google.com/thumbnail?id=${r.drive_file_id}&sz=w1200`;
+      return `
+        <div class="photo-card" data-caption="${r.title || ''}">
+          <img
+            src="${thumbUrl}"
+            alt="${r.title || 'BALP photo'}"
+            loading="lazy"
+            onerror="this.parentElement.innerHTML='<div class=\\'photo-placeholder\\'><span>${r.title || 'Photo'}</span></div>'"
+          >
+        </div>`;
+    }).join('');
+  }
+
   // ── LOAD ALL DATA ──
-  // Uncomment loadLiveData() once you've added the four tabs to your Sheet
   async function loadLiveData() {
-    const [gigs, setlists, objects, videos] = await Promise.all([
+    const [photos, gigs, setlists, objects, videos] = await Promise.all([
+      fetchSheet('BALP_Photos'),
       fetchSheet('BALP_Gigs'),
       fetchSheet('BALP_Setlists'),
       fetchSheet('BALP_Objects'),
       fetchSheet('BALP_Tracks'),
     ]);
+    renderPhotos(photos);
     renderGigs(gigs);
     renderSetlists(setlists);
     renderObjects(objects);
@@ -1400,7 +1407,6 @@
   }
 
   // ── ACTIVATE ──
-  // Remove the comment slashes below when your Sheet tabs are ready:
   loadLiveData();
 </script>
 </body>
