@@ -1758,6 +1758,9 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeLightbox();
   });
+
+  // ── PHOTO SWITCHER (card thumbnail strip) ──
+  function switchPhoto(mainId, thumbEl, newSrc) {
     const mainImg = document.getElementById(mainId);
     if (mainImg) {
       mainImg.style.opacity = '0';
@@ -1766,7 +1769,6 @@
         mainImg.style.opacity = '1';
       }, 150);
     }
-    // Update active state on thumbnails
     const strip = thumbEl.closest('.merch-thumbs');
     if (strip) strip.querySelectorAll('.merch-thumb').forEach(t => t.classList.remove('active'));
     thumbEl.classList.add('active');
