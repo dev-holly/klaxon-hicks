@@ -207,9 +207,8 @@
     gap: 0.4rem;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
     padding: 0 1rem 0.75rem;
-    /* Extend flush to screen edges */
     margin: 0 -2rem;
   }
   .photo-grid::-webkit-scrollbar { display: none; }
@@ -217,21 +216,18 @@
   .photo-card {
     position: relative;
     overflow: hidden;
-    background: #1a1a1a;
+    background: #0d0d0d;
     cursor: pointer;
-    /* Mobile card sizing */
     flex: 0 0 78vw;
-    height: 56vw;
-    max-height: 380px;
+    height: 80vw;
+    max-height: 480px;
     scroll-snap-align: start;
     border-radius: 2px;
   }
 
-  /* First card slightly wider — hero emphasis */
+  /* First card slightly wider — same height as all others */
   .photo-card:first-child {
     flex: 0 0 88vw;
-    height: 64vw;
-    max-height: 420px;
   }
 
   .photo-card img {
@@ -271,6 +267,16 @@
     background: var(--yellow);
     width: 16px;
     border-radius: 2px;
+  }
+
+  /* Portrait images — show full image with dark letterbox sides */
+  .photo-card[data-orientation="portrait"] img {
+    object-fit: contain;
+    background: #0d0d0d;
+  }
+  /* Landscape images — fill card edge to edge */
+  .photo-card[data-orientation="landscape"] img {
+    object-fit: cover;
   }
 
   /* ── DESKTOP: mosaic grid ── */
@@ -315,16 +321,6 @@
     .photo-card:nth-child(7) { grid-column: 9 / 13; grid-row: 3 / 4; min-height: 260px; }
 
     .photo-scroll-hint { display: none; }
-  }
-
-  /* Portrait images — show full image with dark letterbox */
-  .photo-card[data-orientation="portrait"] img {
-    object-fit: contain;
-    background: #0d0d0d;
-  }
-  /* Landscape images — fill card */
-  .photo-card[data-orientation="landscape"] img {
-    object-fit: cover;
   }
 
   /* Placeholder when no image */
@@ -1847,16 +1843,11 @@
     const isPortrait = img.naturalHeight > img.naturalWidth;
 
     if (isPortrait) {
-      img.style.objectFit      = 'contain';
-      img.style.background     = '#0d0d0d';
+      img.style.objectFit  = 'contain';
+      img.style.background = '#0d0d0d';
       card.setAttribute('data-orientation', 'portrait');
-      // On mobile carousel — make portrait cards taller so image isn't tiny
-      if (window.innerWidth < 769) {
-        card.style.height    = '90vw';
-        card.style.maxHeight = '520px';
-      }
     } else {
-      img.style.objectFit  = 'cover';
+      img.style.objectFit = 'cover';
       card.setAttribute('data-orientation', 'landscape');
     }
   }
