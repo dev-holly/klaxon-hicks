@@ -159,6 +159,31 @@
   }
   .image-item:hover .image-caption { opacity: 1; }
 
+  /* ── VIDEO ── */
+  .video-block {
+    background: var(--card-bg);
+    border: 1px solid rgba(20,18,16,0.2);
+    overflow: hidden;
+  }
+  .video-label {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 400;
+    font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--mid); padding: 0.75rem 1rem 0;
+  }
+  .video-embed {
+    position: relative; padding-bottom: 56.25%; /* 16:9 */
+    background: var(--ink);
+  }
+  .video-embed iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; border: none;
+  }
+  .video-caption {
+    padding: 0.6rem 1rem 0.75rem;
+    font-family: 'Courier Prime', monospace; font-size: 0.72rem;
+    color: var(--mid);
+  }
+
   /* ── LIGHTBOX ── */
   .lightbox {
     display: none; position: fixed; inset: 0;
@@ -309,6 +334,11 @@
     }
     return url;
   }
+  function driveVideo(url) {
+    if (!url) return '';
+    const id = driveFileId(url);
+    return id ? `https://drive.google.com/file/d/${id}/preview` : '';
+  }
 
   function parseDate(str) {
     if (!str) return null;
@@ -408,6 +438,13 @@
 
     const imageUrls = (portal.image_urls || '').split(',').map(u => u.trim()).filter(Boolean).map(driveEmbed);
     const audioSrc  = driveAudio(portal.audio_url || '');
+    // Supports up to 3 video files — video_url_1, video_url_2, video_url_3
+    // Falls back to legacy video_url column if present
+    const videoUrls = [
+      portal.video_url_1 || portal.video_url || '',
+      portal.video_url_2 || '',
+      portal.video_url_3 || ''
+    ].map(driveVideo).filter(Boolean);
 
     let audioHTML = '';
     if (audioSrc) {
@@ -431,6 +468,24 @@
             </div>
           </div>
         </div>`;
+    }
+
+    let videoHTML = '';
+    if (videoUrls.length) {
+      videoHTML = `
+        <div class="section-divider">Behind the scenes</div>
+        ${videoUrls.map((src, i) => `
+          <div class="video-block" ${i > 0 ? 'style="margin-top:1rem;"' : ''}>
+            <div class="video-label">// Footage ${videoUrls.length > 1 ? String(i+1).padStart(2,'0') : ''}</div>
+            <div class="video-embed">
+              <iframe
+                src="${src}"
+                allowfullscreen
+                allow="autoplay"
+                loading="${i === 0 ? 'eager' : 'lazy'}">
+              </iframe>
+            </div>
+          </div>`).join('')}`;
     }
 
     let imagesHTML = '';
@@ -466,6 +521,7 @@
           </div>` : ''}
 
         ${audioHTML}
+        ${videoHTML}
         ${imagesHTML}
 
         <div class="signal-strip">
