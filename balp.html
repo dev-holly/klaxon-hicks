@@ -576,6 +576,146 @@
   }
   .iwasthere-btn svg { width: 14px; }
 
+  /* Tap hint on setlist card */
+  .setlist-card {
+    cursor: pointer;
+  }
+  .setlist-tap-hint {
+    margin-top: 0.75rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--yellow);
+    opacity: 0.6;
+    text-align: center;
+  }
+
+  /* ── SETLIST LIGHTBOX ── */
+  .sl-lightbox {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.94);
+    display: flex; align-items: flex-end;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .sl-lightbox.open {
+    opacity: 1; pointer-events: all;
+  }
+
+  /* Sheet slides up from bottom — feels native on mobile */
+  .sl-lightbox-inner {
+    background: #111;
+    width: 100%;
+    max-height: 88vh;
+    border-radius: 16px 16px 0 0;
+    display: flex; flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+  }
+  .sl-lightbox.open .sl-lightbox-inner {
+    transform: translateY(0);
+  }
+
+  /* Drag handle */
+  .sl-lb-handle {
+    width: 40px; height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    margin: 0.75rem auto 0;
+    flex-shrink: 0;
+  }
+
+  .sl-lb-header {
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; justify-content: space-between; align-items: flex-start;
+    flex-shrink: 0;
+  }
+
+  .sl-lb-venue {
+    font-weight: 700; font-size: 1.1rem; color: var(--white);
+  }
+  .sl-lb-date {
+    font-size: 0.75rem; color: rgba(255,255,255,0.4);
+    margin-top: 0.2rem; letter-spacing: 0.05em;
+  }
+
+  .sl-lb-close {
+    background: rgba(255,255,255,0.08); border: none;
+    color: rgba(255,255,255,0.5); cursor: pointer;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+    transition: background 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .sl-lb-close:hover { background: var(--hot-pink); color: var(--white); }
+
+  .sl-lb-meta {
+    padding: 0.6rem 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-shrink: 0;
+  }
+  .sl-lb-count {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem; letter-spacing: 0.1em;
+    background: rgba(255,224,27,0.12); color: var(--yellow);
+    padding: 0.2rem 0.6rem;
+  }
+
+  /* Scrollable song list */
+  .sl-lb-songs {
+    overflow-y: auto;
+    flex: 1;
+    padding: 0 1.5rem 1.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sl-lb-songs::-webkit-scrollbar { width: 3px; }
+  .sl-lb-songs::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+
+  .sl-lb-song {
+    display: flex; align-items: baseline; gap: 0.75rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.95rem; color: rgba(255,255,255,0.75);
+  }
+  .sl-lb-song:last-child { border-bottom: none; }
+
+  .sl-lb-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.8rem; color: var(--hot-pink);
+    min-width: 1.5rem; opacity: 0.7;
+  }
+  .sl-lb-title { flex: 1; }
+  .sl-lb-artist {
+    font-size: 0.75rem; color: rgba(255,255,255,0.25);
+    font-style: italic; text-align: right;
+  }
+
+  .sl-lb-footer {
+    padding: 1rem 1.5rem 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 769px) {
+    .sl-lightbox { align-items: center; justify-content: center; }
+    .sl-lightbox-inner {
+      max-width: 560px; max-height: 80vh;
+      border-radius: 4px;
+      transform: translateY(20px);
+    }
+    .sl-lightbox.open .sl-lightbox-inner { transform: translateY(0); }
+    .sl-lb-handle { display: none; }
+  }
+  .iwasthere-btn.active {
+    border-color: var(--lime);
+    background: rgba(170,255,0,0.08);
+    color: var(--lime);
+  }
+  .iwasthere-btn svg { width: 14px; }
+
   /* ── MEMORABILIA ── */
   .merch-section { border-top: 1px solid rgba(255,255,255,0.06); }
 
@@ -1396,6 +1536,30 @@
   <a href="mailto:balp@klaxonhicks.com" class="contact-btn">Get In Touch →</a>
 </div>
 
+<!-- SETLIST LIGHTBOX -->
+<div class="sl-lightbox" id="slLightbox" onclick="closeSLOnBg(event)">
+  <div class="sl-lightbox-inner">
+    <div class="sl-lb-handle"></div>
+    <div class="sl-lb-header">
+      <div>
+        <div class="sl-lb-venue" id="slLbVenue"></div>
+        <div class="sl-lb-date" id="slLbDate"></div>
+      </div>
+      <button class="sl-lb-close" onclick="closeSetlistLightbox()">✕</button>
+    </div>
+    <div class="sl-lb-meta">
+      <div class="sl-lb-count" id="slLbCount"></div>
+    </div>
+    <div class="sl-lb-songs" id="slLbSongs"></div>
+    <div class="sl-lb-footer">
+      <button class="iwasthere-btn" id="slLbIWasThere" onclick="toggleIWasThereById(this)">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        I Was There
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- OBJECT LIGHTBOX -->
 <div class="obj-lightbox" id="objLightbox" onclick="closeLightboxOnBg(event)">
   <div class="obj-lightbox-inner" id="objLightboxInner">
@@ -1556,20 +1720,26 @@
   // Tab name: BALP_Setlists
   // Columns:  gig_id | venue | date | song_title | original_artist
   // Add one row per song — songs are grouped by gig_id automatically
+  const setlistStore = [];
+
   function renderSetlists(rows) {
     if (!rows.length) return;
+    setlistStore.length = 0;
     const grid = document.getElementById('setlistGrid');
     const gigs = {};
     rows.forEach(r => {
       if (!gigs[r.gig_id]) gigs[r.gig_id] = { venue: r.venue, date: r.date, songs: [] };
       gigs[r.gig_id].songs.push({ title: r.song_title, artist: r.original_artist });
     });
+
     const PREVIEW = 5;
-    grid.innerHTML = Object.entries(gigs).map(([, g]) => {
+    grid.innerHTML = Object.entries(gigs).map(([, g], idx) => {
+      // Store full gig data for lightbox
+      setlistStore.push(g);
       const preview = g.songs.slice(0, PREVIEW);
       const extra   = g.songs.length - PREVIEW;
       return `
-        <div class="setlist-card">
+        <div class="setlist-card" onclick="openSetlistLightbox(${idx})">
           <div class="setlist-card-header">
             <div>
               <div class="setlist-venue">${g.venue}</div>
@@ -1584,9 +1754,9 @@
                 <span class="song-title">${s.title}</span>
                 <span class="song-artist">${s.artist}</span>
               </li>`).join('')}
-            ${extra > 0 ? `<li style="color:rgba(255,255,255,0.25);font-style:italic;font-size:0.78rem;justify-content:center;padding-top:0.6rem;">+ ${extra} more songs</li>` : ''}
           </ul>
-          <button class="iwasthere-btn" onclick="toggleIWasThere(this)">
+          ${extra > 0 ? `<div class="setlist-tap-hint">Tap to see all ${g.songs.length} songs →</div>` : ''}
+          <button class="iwasthere-btn" onclick="event.stopPropagation(); toggleIWasThere(this)">
             <svg viewBox="0 0 24 24" fill="currentColor" width="14"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
             I Was There
           </button>
@@ -1673,7 +1843,39 @@
     }).join('');
   }
 
-  // ── OBJECT DATA STORE ──
+  // ── SETLIST LIGHTBOX ──
+  function openSetlistLightbox(idx) {
+    const g  = setlistStore[idx];
+    if (!g) return;
+    document.getElementById('slLbVenue').textContent = g.venue;
+    document.getElementById('slLbDate').textContent  = g.date;
+    document.getElementById('slLbCount').textContent = `${g.songs.length} Songs`;
+    document.getElementById('slLbSongs').innerHTML   = g.songs.map((s, i) => `
+      <div class="sl-lb-song">
+        <span class="sl-lb-num">${String(i+1).padStart(2,'0')}</span>
+        <span class="sl-lb-title">${s.title}</span>
+        <span class="sl-lb-artist">${s.artist || ''}</span>
+      </div>`).join('');
+    // Reset I Was There button
+    const btn = document.getElementById('slLbIWasThere');
+    btn.classList.remove('active');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" width="14"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> I Was There`;
+    document.getElementById('slLightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSetlistLightbox() {
+    document.getElementById('slLightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeSLOnBg(e) {
+    if (e.target === document.getElementById('slLightbox')) closeSetlistLightbox();
+  }
+
+  function toggleIWasThereById(btn) {
+    toggleIWasThere(btn);
+  }
   // Stores all rendered object data so lightbox can access it by index
   const objectStore = [];
 
@@ -1762,7 +1964,10 @@
 
   // Close lightbox on Escape key
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'Escape') {
+      closeLightbox();
+      closeSetlistLightbox();
+    }
   });
 
   // ── PHOTO SWITCHER (card thumbnail strip) ──
