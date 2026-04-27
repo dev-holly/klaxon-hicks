@@ -865,12 +865,11 @@
   }
   .merch-main-photo:hover::after { opacity: 1; }
 
-  /* ── OBJECT LIGHTBOX ── */
+  /* ── OBJECT LIGHTBOX — MOBILE FIRST ── */
   .obj-lightbox {
     position: fixed; inset: 0; z-index: 500;
     background: rgba(0,0,0,0.92);
-    display: flex; align-items: center; justify-content: center;
-    padding: 1.5rem;
+    display: flex; align-items: flex-end;
     opacity: 0; pointer-events: none;
     transition: opacity 0.3s ease;
   }
@@ -880,22 +879,50 @@
 
   .obj-lightbox-inner {
     background: #111;
-    max-width: 900px; width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    position: relative;
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 16px 16px 0 0;
+    display: flex; flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
   }
   .obj-lightbox.open .obj-lightbox-inner {
     transform: translateY(0);
   }
 
-  @media (max-width: 680px) {
-    .obj-lightbox-inner { grid-template-columns: 1fr; }
+  /* Drag handle */
+  .obj-lb-handle {
+    width: 40px; height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    margin: 0.75rem auto 0;
+    flex-shrink: 0;
   }
+
+  /* Sticky header — never scrolls away */
+  .obj-lb-header {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
+  }
+
+  .obj-lb-header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; letter-spacing: 0.04em;
+    color: var(--white);
+  }
+
+  /* Scrollable content area */
+  .obj-lb-scroll {
+    overflow-y: auto;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
+  }
+  .obj-lb-scroll::-webkit-scrollbar { width: 3px; }
+  .obj-lb-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
 
   .obj-lb-photos {
     background: #0a0a0a;
@@ -929,8 +956,8 @@
   .obj-lb-thumb:hover { border-color: rgba(255,107,26,0.5); }
 
   .obj-lb-info {
-    padding: 2rem;
-    display: flex; flex-direction: column; gap: 1rem;
+    padding: 1.25rem;
+    display: flex; flex-direction: column; gap: 0.75rem;
   }
 
   .obj-lb-badge {
@@ -943,27 +970,28 @@
 
   .obj-lb-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
     line-height: 1; color: var(--white);
     letter-spacing: 0.03em;
   }
 
   .obj-lb-gig {
     font-size: 0.75rem; color: var(--orange);
-    letter-spacing: 0.08em; display: flex; align-items: center; gap: 0.4rem;
+    letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 0.4rem;
   }
 
   .obj-lb-story {
     font-size: 0.88rem; line-height: 1.7;
     color: rgba(255,255,255,0.6);
-    flex: 1;
   }
 
   .obj-lb-footer {
     border-top: 1px solid rgba(255,255,255,0.08);
-    padding-top: 1rem;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 1rem;
+    padding: 1rem 1.25rem 1.5rem;
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 1rem;
+    flex-shrink: 0;
   }
 
   .obj-lb-price {
@@ -975,15 +1003,46 @@
   }
 
   .obj-lb-close {
-    position: absolute; top: 0.75rem; right: 0.75rem;
     background: rgba(255,255,255,0.08); border: none;
     color: rgba(255,255,255,0.5); cursor: pointer;
-    width: 32px; height: 32px;
+    width: 32px; height: 32px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; transition: background 0.15s, color 0.15s;
+    font-size: 1rem; flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
     font-family: 'DM Sans', sans-serif;
   }
   .obj-lb-close:hover { background: var(--hot-pink); color: var(--white); }
+
+  /* Desktop — centred modal */
+  @media (min-width: 769px) {
+    .obj-lightbox {
+      align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    .obj-lightbox-inner {
+      max-width: 860px; max-height: 88vh;
+      border-radius: 4px;
+      transform: translateY(20px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr auto;
+    }
+    .obj-lightbox.open .obj-lightbox-inner { transform: translateY(0); }
+    .obj-lb-handle { display: none; }
+
+    /* Header spans full width */
+    .obj-lb-header { grid-column: 1 / -1; }
+
+    /* Photos left, info right, footer spans full */
+    .obj-lb-scroll { display: contents; }
+    .obj-lb-photos { grid-column: 1; overflow: hidden; }
+    .obj-lb-info {
+      grid-column: 2;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+    }
+    .obj-lb-footer { grid-column: 1 / -1; }
+  }
 
   /* ── MUSIC / VIDEO ── */
   .music-section { background: #080808; border-top: 1px solid rgba(255,255,255,0.06); }
@@ -1563,22 +1622,31 @@
 <!-- OBJECT LIGHTBOX -->
 <div class="obj-lightbox" id="objLightbox" onclick="closeLightboxOnBg(event)">
   <div class="obj-lightbox-inner" id="objLightboxInner">
-    <button class="obj-lb-close" onclick="closeLightbox()">✕</button>
-    <div class="obj-lb-photos">
-      <div class="obj-lb-main">
-        <img id="objLbMainImg" src="" alt="">
-      </div>
-      <div class="obj-lb-thumbs" id="objLbThumbs"></div>
+    <div class="obj-lb-handle"></div>
+    <!-- Sticky header with close button — always visible -->
+    <div class="obj-lb-header">
+      <div class="obj-lb-header-title" id="objLbHeaderTitle"></div>
+      <button class="obj-lb-close" onclick="closeLightbox()">✕</button>
     </div>
-    <div class="obj-lb-info">
-      <span class="obj-lb-badge" id="objLbBadge"></span>
-      <div class="obj-lb-title" id="objLbTitle"></div>
-      <div class="obj-lb-gig" id="objLbGig"></div>
-      <div class="obj-lb-story" id="objLbStory"></div>
-      <div class="obj-lb-footer">
-        <div class="obj-lb-price" id="objLbPrice"></div>
-        <div id="objLbBtn"></div>
+    <!-- Scrollable content -->
+    <div class="obj-lb-scroll">
+      <div class="obj-lb-photos">
+        <div class="obj-lb-main">
+          <img id="objLbMainImg" src="" alt="">
+        </div>
+        <div class="obj-lb-thumbs" id="objLbThumbs"></div>
       </div>
+      <div class="obj-lb-info">
+        <span class="obj-lb-badge" id="objLbBadge"></span>
+        <div class="obj-lb-title" id="objLbTitle"></div>
+        <div class="obj-lb-gig" id="objLbGig"></div>
+        <div class="obj-lb-story" id="objLbStory"></div>
+      </div>
+    </div>
+    <!-- Sticky footer with price + buy button -->
+    <div class="obj-lb-footer">
+      <div class="obj-lb-price" id="objLbPrice"></div>
+      <div id="objLbBtn"></div>
     </div>
   </div>
 </div>
@@ -1894,6 +1962,10 @@
 
     currentLightboxPhotos = photos;
     currentLightboxIdx    = 0;
+
+    // Header title
+    const headerTitle = document.getElementById('objLbHeaderTitle');
+    if (headerTitle) headerTitle.textContent = item.title || '';
 
     // Main image
     const mainImg = document.getElementById('objLbMainImg');
