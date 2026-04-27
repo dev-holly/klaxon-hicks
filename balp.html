@@ -317,6 +317,16 @@
     .photo-scroll-hint { display: none; }
   }
 
+  /* Portrait images — show full image with dark letterbox */
+  .photo-card[data-orientation="portrait"] img {
+    object-fit: contain;
+    background: #0d0d0d;
+  }
+  /* Landscape images — fill card */
+  .photo-card[data-orientation="landscape"] img {
+    object-fit: cover;
+  }
+
   /* Placeholder when no image */
   .photo-placeholder {
     width: 100%; height: 100%; min-height: inherit;
@@ -1812,7 +1822,6 @@
   function renderPhotos(rows) {
     if (!rows.length) return;
     const grid = document.getElementById('photoGrid');
-    // Sort by order column if present
     const sorted = [...rows].sort((a, b) => (parseInt(a.order) || 0) - (parseInt(b.order) || 0));
     grid.innerHTML = sorted.map(r => {
       const thumbUrl = `https://drive.google.com/thumbnail?id=${r.drive_file_id}&sz=w1200`;
@@ -1822,10 +1831,34 @@
             src="${thumbUrl}"
             alt="${r.title || 'BALP photo'}"
             loading="lazy"
+            onload="detectPhotoOrientation(this)"
             onerror="this.parentElement.innerHTML='<div class=\\'photo-placeholder\\'><span>${r.title || 'Photo'}</span></div>'"
           >
         </div>`;
     }).join('');
+  }
+
+  // ── PHOTO ORIENTATION DETECTION ──
+  // Called when each photo loads — checks natural dimensions
+  // Portrait (taller than wide) → contain + dark bg so full image shows
+  // Landscape (wider than tall) → cover fills the card as before
+  function detectPhotoOrientation(img) {
+    const card       = img.closest('.photo-card');
+    const isPortrait = img.naturalHeight > img.naturalWidth;
+
+    if (isPortrait) {
+      img.style.objectFit      = 'contain';
+      img.style.background     = '#0d0d0d';
+      card.setAttribute('data-orientation', 'portrait');
+      // On mobile carousel — make portrait cards taller so image isn't tiny
+      if (window.innerWidth < 769) {
+        card.style.height    = '90vw';
+        card.style.maxHeight = '520px';
+      }
+    } else {
+      img.style.objectFit  = 'cover';
+      card.setAttribute('data-orientation', 'landscape');
+    }
   }
 
   // ── RENDER: STATS ──
