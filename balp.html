@@ -1476,15 +1476,47 @@
     }).join('');
   }
 
+  // ── RENDER: STATS ──
+  // Reads from Artists tab — finds the BALP row by name
+  // Columns needed: stat_gigs | stat_songs | stat_years | stat_location
+  function renderStats(rows) {
+    if (!rows.length) return;
+    // Find the BALP row — matches on name containing 'BALP' or 'Big Arse'
+    const balp = rows.find(r =>
+      r.name && (r.name.toUpperCase().includes('BALP') || r.name.toUpperCase().includes('BIG ARSE'))
+    );
+    if (!balp) return;
+    const stats = document.getElementById('statsGrid');
+    stats.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-number">${balp.stat_gigs || '—'}</div>
+        <div class="stat-label">Gigs Played</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">${balp.stat_songs || '—'}</div>
+        <div class="stat-label">Songs in Rotation</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">${balp.stat_years || '—'}</div>
+        <div class="stat-label">Years Together</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="font-size:1.8rem">${balp.stat_location || 'Freo'}</div>
+        <div class="stat-label">Home Base</div>
+      </div>`;
+  }
+
   // ── LOAD ALL DATA ──
   async function loadLiveData() {
-    const [photos, gigs, setlists, objects, videos] = await Promise.all([
+    const [artists, photos, gigs, setlists, objects, videos] = await Promise.all([
+      fetchSheet('Artists'),
       fetchSheet('BALP_Photos'),
       fetchSheet('BALP_Gigs'),
       fetchSheet('BALP_Setlists'),
       fetchSheet('BALP_Objects'),
       fetchSheet('BALP_Tracks'),
     ]);
+    renderStats(artists);
     renderPhotos(photos);
     renderGigs(gigs);
     renderSetlists(setlists);
